@@ -8,8 +8,8 @@ import (
 var ErrNotFound = errors.New("entity not found")
 
 type SQLClient interface {
-	Find(query string, args ...any) (RowsWrapper, error)
-	FindOne(query string, args ...any) RowWrapper
+	Find(result any, query string, args ...any) error
+	FindOne(result any, query string, args ...any) error
 	Exec(query string, args ...any) (ResultWrapper, error)
 	ExecWithReturn(query string, args ...any) RowWrapper
 	Begin() (TransactionWrapper, error)

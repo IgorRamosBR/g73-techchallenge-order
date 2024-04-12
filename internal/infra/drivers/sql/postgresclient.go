@@ -24,13 +24,12 @@ func NewPostgresSQLClient(username, password, host, port, dbname string) (SQLCli
 	}, nil
 }
 
-func (client sqlClient) Find(query string, args ...any) (RowsWrapper, error) {
-	rows, err := client.db.Query(query, args...)
-	return NewRowsWrapper(rows), err
+func (client sqlClient) Find(result any, query string, args ...any) error {
+	return client.db.Select(result, query, args...)
 }
 
-func (client sqlClient) FindOne(query string, args ...any) RowWrapper {
-	return NewRowWrapper(client.db.QueryRow(query, args...))
+func (client sqlClient) FindOne(result any, query string, args ...any) error {
+	return client.db.Get(result, query, args...)
 }
 
 func (client sqlClient) Exec(query string, args ...any) (ResultWrapper, error) {

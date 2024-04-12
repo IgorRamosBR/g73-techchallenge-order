@@ -27,10 +27,8 @@ func NewCustomerRepositoryGateway(sqlClient sql.SQLClient) CustomerRepositoryGat
 func (r customerRepositoryGateway) FindCustomerById(id int) (entities.Customer, error) {
 	getCustomerByIdQuery := fmt.Sprintf(sqlscripts.GetCustomerByIdQuery)
 
-	row := r.sqlClient.FindOne(getCustomerByIdQuery, id)
-
 	var customer entities.Customer
-	err := row.Scan(&customer.ID, &customer.Name, &customer.Cpf, &customer.Email, &customer.CreatedAt, &customer.UpdatedAt)
+	err := r.sqlClient.FindOne(&customer, getCustomerByIdQuery, id)
 	if err != nil {
 		return entities.Customer{}, fmt.Errorf("failed to find customer by id [%d], error %v", id, err)
 	}
@@ -41,10 +39,8 @@ func (r customerRepositoryGateway) FindCustomerById(id int) (entities.Customer, 
 func (r customerRepositoryGateway) FindCustomerByCPF(cpf string) (entities.Customer, error) {
 	getCustomerByIdQuery := fmt.Sprintf(sqlscripts.GetCustomerByCPFQuery)
 
-	row := r.sqlClient.FindOne(getCustomerByIdQuery, cpf)
-
 	var customer entities.Customer
-	err := row.Scan(&customer.ID, &customer.Name, &customer.Cpf, &customer.Email, &customer.CreatedAt, &customer.UpdatedAt)
+	err := r.sqlClient.FindOne(&customer, getCustomerByIdQuery, cpf)
 	if err != nil {
 		return entities.Customer{}, fmt.Errorf("failed to find customer by cpf [%s], error %v", cpf, err)
 	}

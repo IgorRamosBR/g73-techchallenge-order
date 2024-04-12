@@ -31,21 +31,10 @@ func NewProductRepositoryGateway(sqlClient sql.SQLClient) ProductRepositoryGatew
 func (r productRepositoryGateway) FindAllProducts(pageParams dto.PageParams) ([]entities.Product, error) {
 	getAllProductsQuery := fmt.Sprintf(sqlscripts.GetAllProductsQuery, pageParams.GetLimit(), pageParams.GetOffset())
 
-	rows, err := r.sqlClient.Find(getAllProductsQuery)
+	products := []entities.Product{}
+	err := r.sqlClient.Find(&products, getAllProductsQuery)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find all products, error %w", err)
-	}
-	defer rows.Close()
-
-	products := []entities.Product{}
-	for rows.Next() {
-		var product entities.Product
-		err = rows.Scan(&product.ID, &product.Name, &product.SkuId, &product.Description, &product.Category, &product.Price, &product.CreatedAt, &product.UpdatedAt)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan all products, error %w", err)
-		}
-
-		products = append(products, product)
 	}
 
 	return products, nil
@@ -54,31 +43,18 @@ func (r productRepositoryGateway) FindAllProducts(pageParams dto.PageParams) ([]
 func (r productRepositoryGateway) FindProductsByCategory(pageParams dto.PageParams, category string) ([]entities.Product, error) {
 	getProductsByCategoryQuery := fmt.Sprintf(sqlscripts.GetProductsByCategoryQuery, pageParams.GetLimit(), pageParams.GetOffset())
 
-	rows, err := r.sqlClient.Find(getProductsByCategoryQuery, category)
+	products := []entities.Product{}
+	err := r.sqlClient.Find(&products, getProductsByCategoryQuery, category)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find products by category, error %w", err)
-	}
-	defer rows.Close()
-
-	products := []entities.Product{}
-	for rows.Next() {
-		var product entities.Product
-		err = rows.Scan(&product.ID, &product.Name, &product.SkuId, &product.Description, &product.Category, &product.Price, &product.CreatedAt, &product.UpdatedAt)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan products by category, error %w", err)
-		}
-
-		products = append(products, product)
 	}
 
 	return products, nil
 }
 
 func (r productRepositoryGateway) FindProductById(id int) (entities.Product, error) {
-	row := r.sqlClient.FindOne(sqlscripts.GetProductByIdQuery, id)
-
 	var product entities.Product
-	err := row.Scan(&product.ID, &product.Name, &product.SkuId, &product.Description, &product.Category, &product.Price, &product.CreatedAt, &product.UpdatedAt)
+	err := r.sqlClient.FindOne(&product, sqlscripts.GetProductByIdQuery, id)
 	if err != nil {
 		return entities.Product{}, fmt.Errorf("failed to find product by id, error %w", err)
 	}

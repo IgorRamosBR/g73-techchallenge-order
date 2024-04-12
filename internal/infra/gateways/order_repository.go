@@ -27,45 +27,32 @@ func NewOrderRepositoryGateway(sqlClient sql.SQLClient) OrderRepositoryGateway {
 }
 
 func (r orderRepositoryGateway) FindAllOrders(pageParams dto.PageParams) ([]entities.Order, error) {
-	rows, err := r.sqlClient.Find(sqlscripts.FindAllOrdersQuery, pageParams.GetLimit(), pageParams.GetOffset())
+	orders := []entities.Order{}
+	err := r.sqlClient.Find(&orders, sqlscripts.FindAllOrdersQuery, pageParams.GetLimit(), pageParams.GetOffset())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find all orders, error %w", err)
 	}
 
-	orders := []entities.Order{}
-	for rows.Next() {
-		var order entities.Order
-		var customer entities.Customer
-
-		err = rows.Scan(&order.ID, &order.Coupon, &order.TotalAmount, &order.Status, &order.CreatedAt,
-			&customer.ID, &customer.Name, &customer.Cpf, &customer.Email, &customer.CreatedAt, &customer.UpdatedAt)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan orders, error %w", err)
-		}
-
+	for i, order := range orders {
 		orderItems, err := r.getOrderItems(order.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan order items, error %w", err)
 		}
 
-		order.Customer = customer
-		order.Items = orderItems
-		orders = append(orders, order)
+		orders[i].Items = orderItems
 	}
 
 	return orders, nil
 }
 
 func (r orderRepositoryGateway) GetOrderStatus(orderId int) (string, error) {
-	row := r.sqlClient.FindOne(sqlscripts.FindOrderStatusByIdQuery, orderId)
-
-	var status string
-	err := row.Scan(&status)
+	var orderStatus string
+	err := r.sqlClient.FindOne(&orderStatus, sqlscripts.FindOrderStatusByIdQuery, orderId)
 	if err != nil {
 		return "", fmt.Errorf("failed to find order status, error %w", err)
 	}
 
-	return status, nil
+	return orderStatus, nil
 }
 
 func (r orderRepositoryGateway) SaveOrder(order entities.Order) (int, error) {
@@ -116,24 +103,10 @@ func (r orderRepositoryGateway) UpdateOrderStatus(orderId int, orderStatus strin
 }
 
 func (r orderRepositoryGateway) getOrderItems(orderId int) ([]entities.OrderItem, error) {
-	rows, err := r.sqlClient.Find(sqlscripts.FindOrderItems, orderId)
+	orderItems := []entities.OrderItem{}
+	err := r.sqlClient.Find(&orderItems, sqlscripts.FindOrderItems, orderId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find order items, error %w", err)
-	}
-
-	orderItems := []entities.OrderItem{}
-	for rows.Next() {
-		var orderItem entities.OrderItem
-		var product entities.Product
-
-		err = rows.Scan(&orderItem.ID, &product.ID, &product.Name, &product.SkuId, &product.Description,
-			&product.Category, &product.Price, &product.CreatedAt, &product.UpdatedAt, &orderItem.Quantity, &orderItem.Type)
-		if err != nil {
-			return nil, err
-		}
-
-		orderItem.Product = product
-		orderItems = append(orderItems, orderItem)
 	}
 
 	return orderItems, nil

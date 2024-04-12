@@ -71,7 +71,7 @@ func (o OrderDTO) ToOrder(customer entities.Customer) entities.Order {
 	return entities.Order{
 		Items:     orderItems,
 		Coupon:    o.Coupon,
-		Customer:  customer,
+		Customer:  &customer,
 		Status:    string(o.Status),
 		CreatedAt: time.Now(),
 	}
