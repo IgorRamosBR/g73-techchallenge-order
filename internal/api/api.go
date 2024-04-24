@@ -28,7 +28,6 @@ func NewApi(params ApiParams) *gin.Engine {
 		v1.POST("/orders", params.OrderController.CreateOrder)
 		v1.GET("/orders/:id/status", params.OrderController.GetOrderStatus)
 		v1.PUT("/orders/:id/status", params.OrderController.UpdateOrderStatus)
-		v1.PUT("/orders/:id/payment", params.OrderController.HandleOrderPayment)
 	}
 
 	return router

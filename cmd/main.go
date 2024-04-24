@@ -9,7 +9,6 @@ import (
 	"github.com/g73-techchallenge-order/internal/core/usecases"
 	"github.com/g73-techchallenge-order/internal/infra/drivers/authorizer"
 	"github.com/g73-techchallenge-order/internal/infra/drivers/http"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/payment"
 	"github.com/g73-techchallenge-order/internal/infra/drivers/sql"
 	"github.com/g73-techchallenge-order/internal/infra/gateways"
 	"github.com/golang-migrate/migrate/v4"
@@ -18,15 +17,11 @@ import (
 )
 
 func main() {
-	config := configs.NewConfig()
-	appConfig, err := config.ReadConfig()
-	if err != nil {
-		panic(err)
-	}
+	appConfig := configs.GetAppConfig()
 
-	paymentClient := http.NewMockHttpClient()
+	httpClient := http.NewMockHttpClient()
 	postgresSQLClient := createPostgresSQLClient(appConfig)
-	err = performMigrations(postgresSQLClient)
+	err := performMigrations(postgresSQLClient)
 	if err != nil {
 		panic(err)
 	}
@@ -34,15 +29,14 @@ func main() {
 	authorizerClient := http.NewHttpClient()
 	authorizer := authorizer.NewAuthorizer(authorizerClient, appConfig.AuthorizerURL)
 
-	paymentBroker := payment.NewMercadoPagoBroker(paymentClient, appConfig.PaymentBrokerURL)
-
 	customerRepositoryGateway := gateways.NewCustomerRepositoryGateway(postgresSQLClient)
 	productRepositoryGateway := gateways.NewProductRepositoryGateway(postgresSQLClient)
 	orderRepositoryGateway := gateways.NewOrderRepositoryGateway(postgresSQLClient)
+	paymentClient := gateways.NewPaymentClient(httpClient, appConfig.PaymentURL)
 
 	customerUsecase := usecases.NewCustomerUsecase(customerRepositoryGateway)
 	productUsecase := usecases.NewProductUsecase(productRepositoryGateway)
-	paymentUsecase := usecases.NewPaymentUsecase(appConfig.NotificationURL, appConfig.SponsorId, paymentBroker)
+	paymentUsecase := usecases.NewPaymentUsecase(paymentClient)
 	authorizerUsecase := usecases.NewAuthorizerUsecase(authorizer)
 	orderUsecase := usecases.NewOrderUsecase(authorizerUsecase, paymentUsecase, productUsecase, orderRepositoryGateway)
 

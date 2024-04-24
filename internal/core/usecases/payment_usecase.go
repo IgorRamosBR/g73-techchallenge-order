@@ -1,12 +1,9 @@
 package usecases
 
 import (
-	"fmt"
-	"strconv"
-
 	"github.com/g73-techchallenge-order/internal/core/entities"
 	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/payment"
+	"github.com/g73-techchallenge-order/internal/infra/gateways"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -16,22 +13,18 @@ type PaymentUsecase interface {
 }
 
 type paymentUsecase struct {
-	notificationUrl string
-	sponsorId       string
-	paymentBroker   payment.PaymentBroker
+	paymentClient gateways.PaymentClient
 }
 
-func NewPaymentUsecase(notificationUrl, sponsorId string, paymentBroker payment.PaymentBroker) PaymentUsecase {
+func NewPaymentUsecase(paymentClient gateways.PaymentClient) PaymentUsecase {
 	return paymentUsecase{
-		notificationUrl: notificationUrl,
-		sponsorId:       sponsorId,
-		paymentBroker:   paymentBroker,
+		paymentClient: paymentClient,
 	}
 }
 
 func (u paymentUsecase) GeneratePaymentQRCode(order entities.Order) (string, error) {
 	paymentRequest := u.createPaymentRequest(order)
-	paymentResponse, err := u.paymentBroker.GeneratePaymentQRCode(paymentRequest)
+	paymentResponse, err := u.paymentClient.GeneratePaymentQRCode(paymentRequest)
 	if err != nil {
 		log.Errorf("failed to generate payment qrcode for the order [%d], error: %v", order.ID, err)
 		return "", err
@@ -40,40 +33,31 @@ func (u paymentUsecase) GeneratePaymentQRCode(order entities.Order) (string, err
 	return paymentResponse.QrData, nil
 }
 
-func (u paymentUsecase) createPaymentRequest(order entities.Order) dto.PaymentQRCodeRequest {
+func (u paymentUsecase) createPaymentRequest(order entities.Order) dto.PaymentRequest {
 	var items []dto.PaymentItemRequest
 	for _, item := range order.Items {
 		items = append(items, createPaymentItem(item))
 	}
 
-	return dto.PaymentQRCodeRequest{
-		ExternalReference: strconv.FormatUint(uint64(order.ID), 10),
-		Title:             fmt.Sprintf("Order %d for the Customer[%d]", order.ID, order.Customer.ID),
-		NotificationURL:   fmt.Sprintf("%s/orders/%d/payment", u.notificationUrl, order.ID),
-		TotalAmount:       order.TotalAmount,
-		Items:             items,
-		Sponsor:           u.sponsorId,
+	return dto.PaymentRequest{
+		OrderId:     order.ID,
+		TotalAmount: order.TotalAmount,
+		Items:       items,
 	}
 }
 
 func createPaymentItem(item entities.OrderItem) dto.PaymentItemRequest {
 	paymentItem := dto.PaymentItemRequest{
-		SkuNumber:   item.Product.SkuId,
-		Category:    item.Product.Category,
-		Title:       item.Product.Name,
-		Description: item.Product.Description,
-		UnitPrice:   item.Product.Price,
-		Quantity:    item.Quantity,
-		UnitMeasure: getUnitMeasure(item.Type),
-		TotalAmount: item.Product.Price * float64(item.Quantity),
+		Quantity: item.Quantity,
+		Product: dto.PaymentProductRequest{
+			Name:        item.Product.Name,
+			SkuId:       item.Product.SkuId,
+			Description: item.Product.Description,
+			Category:    item.Product.Category,
+			Type:        item.Type,
+			Price:       item.Product.Price,
+		},
 	}
 
 	return paymentItem
-}
-
-func getUnitMeasure(itemType string) string {
-	if itemType == string(dto.OrderItemTypeCustomCombo) {
-		return "pack"
-	}
-	return "unit"
 }

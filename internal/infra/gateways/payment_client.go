@@ -1,4 +1,4 @@
-package payment
+package gateways
 
 import (
 	"encoding/json"
@@ -8,29 +8,29 @@ import (
 	"github.com/g73-techchallenge-order/internal/infra/drivers/http"
 )
 
-type PaymentBroker interface {
-	GeneratePaymentQRCode(dto.PaymentQRCodeRequest) (dto.PaymentQRCodeResponse, error)
+type PaymentClient interface {
+	GeneratePaymentQRCode(dto.PaymentRequest) (dto.PaymentQRCodeResponse, error)
 }
 
-type mercadoPagoBroker struct {
+type paymentAPIClient struct {
 	httpClient http.HttpClient
-	brokerPath string
+	apiUrl     string
 }
 
-func NewMercadoPagoBroker(httpClient http.HttpClient, brokerPath string) PaymentBroker {
-	return mercadoPagoBroker{
+func NewPaymentClient(httpClient http.HttpClient, apiUrl string) PaymentClient {
+	return paymentAPIClient{
 		httpClient: httpClient,
-		brokerPath: brokerPath,
+		apiUrl:     apiUrl,
 	}
 }
 
-func (b mercadoPagoBroker) GeneratePaymentQRCode(request dto.PaymentQRCodeRequest) (dto.PaymentQRCodeResponse, error) {
+func (p paymentAPIClient) GeneratePaymentQRCode(request dto.PaymentRequest) (dto.PaymentQRCodeResponse, error) {
 	reqBody, err := json.Marshal(&request)
 	if err != nil {
-		return dto.PaymentQRCodeResponse{}, fmt.Errorf("failed to marshal payment qrcode request, error: %v", err)
+		return dto.PaymentQRCodeResponse{}, fmt.Errorf("failed to marshal payment request, error: %v", err)
 	}
 
-	response, err := b.httpClient.DoPost(b.brokerPath, reqBody)
+	response, err := p.httpClient.DoPost(p.apiUrl, reqBody)
 	if err != nil {
 		return dto.PaymentQRCodeResponse{}, fmt.Errorf("failed to call mercado pago broker, error: %v", err)
 	}
