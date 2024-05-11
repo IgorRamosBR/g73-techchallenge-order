@@ -13,8 +13,8 @@ type sqlClient struct {
 	db *sqlx.DB
 }
 
-func NewPostgresSQLClient(username, password, host, port, dbname string) (SQLClient, error) {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", strings.TrimSpace(username), strings.TrimSpace(password), host, port, dbname)
+func NewPostgresSQLClient(username, password, host, port, dbname, sslmode string) (SQLClient, error) {
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s%s", strings.TrimSpace(username), strings.TrimSpace(password), host, port, dbname, sslmode)
 	db, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
 		return nil, err

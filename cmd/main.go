@@ -21,7 +21,7 @@ func main() {
 
 	httpClient := http.NewMockHttpClient()
 	postgresSQLClient := createPostgresSQLClient(appConfig)
-	err := performMigrations(postgresSQLClient)
+	err := performMigrations(postgresSQLClient, appConfig.DatabaseMigrationsPath)
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +54,7 @@ func main() {
 }
 
 func createPostgresSQLClient(appConfig configs.AppConfig) sql.SQLClient {
-	db, err := sql.NewPostgresSQLClient(appConfig.DatabaseUser, appConfig.DatabasePassword, appConfig.DatabaseHost, appConfig.DatabasePort, appConfig.DatabaseName)
+	db, err := sql.NewPostgresSQLClient(appConfig.DatabaseUser, appConfig.DatabasePassword, appConfig.DatabaseHost, appConfig.DatabasePort, appConfig.DatabaseName, appConfig.DatabaseSSLMode)
 	if err != nil {
 		panic(fmt.Errorf("failed to connect database, error %w", err))
 	}
@@ -67,14 +67,14 @@ func createPostgresSQLClient(appConfig configs.AppConfig) sql.SQLClient {
 	return db
 }
 
-func performMigrations(client sql.SQLClient) error {
+func performMigrations(client sql.SQLClient, migrationsPath string) error {
 	driver, err := postgres.WithInstance(client.GetConnection(), &postgres.Config{})
 	if err != nil {
 		return err
 	}
 
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://./migrations",
+		fmt.Sprintf("file://%s", migrationsPath),
 		"postgres", driver)
 	if err != nil {
 		return err
