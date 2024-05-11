@@ -2,6 +2,7 @@ package dto
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/asaskevich/govalidator"
@@ -88,4 +89,47 @@ func (o OrderDTO) ValidateOrder() (bool, error) {
 	}
 
 	return true, nil
+}
+
+func isValidCPF(cpf string) bool {
+	cpf = strings.Replace(cpf, ".", "", -1)
+	cpf = strings.Replace(cpf, "-", "", -1)
+
+	if len(cpf) != 11 {
+		return false
+	}
+
+	if strings.Count(cpf, string(cpf[0])) == 11 {
+		return false
+	}
+
+	// Check if all digits are the same
+	if cpf == "00000000000" {
+		return false
+	}
+
+	// Validate CPF using the standard algorithm
+	var sum1, sum2 int
+	for i := 0; i < 9; i++ {
+		digit := int(cpf[i] - '0')
+		sum1 += digit * (10 - i)
+		sum2 += digit * (11 - i)
+	}
+
+	sum1 %= 11
+	if sum1 < 2 {
+		sum1 = 0
+	} else {
+		sum1 = 11 - sum1
+	}
+
+	sum2 += sum1 * 2
+	sum2 %= 11
+	if sum2 < 2 {
+		sum2 = 0
+	} else {
+		sum2 = 11 - sum2
+	}
+
+	return cpf[9]-'0' == byte(sum1) && cpf[10]-'0' == byte(sum2)
 }

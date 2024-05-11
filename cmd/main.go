@@ -29,25 +29,21 @@ func main() {
 	authorizerClient := http.NewHttpClient()
 	authorizer := authorizer.NewAuthorizer(authorizerClient, appConfig.AuthorizerURL)
 
-	customerRepositoryGateway := gateways.NewCustomerRepositoryGateway(postgresSQLClient)
 	productRepositoryGateway := gateways.NewProductRepositoryGateway(postgresSQLClient)
 	orderRepositoryGateway := gateways.NewOrderRepositoryGateway(postgresSQLClient)
 	paymentClient := gateways.NewPaymentClient(httpClient, appConfig.PaymentURL)
 
-	customerUsecase := usecases.NewCustomerUsecase(customerRepositoryGateway)
 	productUsecase := usecases.NewProductUsecase(productRepositoryGateway)
 	paymentUsecase := usecases.NewPaymentUsecase(paymentClient)
 	authorizerUsecase := usecases.NewAuthorizerUsecase(authorizer)
 	orderUsecase := usecases.NewOrderUsecase(authorizerUsecase, paymentUsecase, productUsecase, orderRepositoryGateway)
 
-	customerController := controllers.NewCustomerController(customerUsecase)
 	productController := controllers.NewProductController(productUsecase)
 	orderController := controllers.NewOrderController(orderUsecase)
 
 	apiParams := api.ApiParams{
-		CustomerController: customerController,
-		ProductController:  productController,
-		OrderController:    orderController,
+		ProductController: productController,
+		OrderController:   orderController,
 	}
 	api := api.NewApi(apiParams)
 	api.Run(":8080")
