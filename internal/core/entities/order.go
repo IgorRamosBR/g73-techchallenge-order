@@ -11,7 +11,7 @@ type Order struct {
 	TotalAmount float64     `json:"totalAmount" db:"total_amount"`
 	Status      string      `json:"status"`
 	CreatedAt   time.Time   `json:"createdAt" db:"created_at"`
-	Customer    *Customer   `json:"customer" db:"customer"`
+	CustomerCPF string      `json:"customerCPF" db:"customer_cpf"`
 }
 
 type OrderItem struct {

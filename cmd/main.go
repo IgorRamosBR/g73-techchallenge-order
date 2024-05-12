@@ -19,42 +19,37 @@ import (
 func main() {
 	appConfig := configs.GetAppConfig()
 
-	httpClient := http.NewMockHttpClient()
+	httpClient := http.NewHttpClient(appConfig.DefaultTimeout)
 	postgresSQLClient := createPostgresSQLClient(appConfig)
-	err := performMigrations(postgresSQLClient)
+	err := performMigrations(postgresSQLClient, appConfig.DatabaseMigrationsPath)
 	if err != nil {
 		panic(err)
 	}
 
-	authorizerClient := http.NewHttpClient()
-	authorizer := authorizer.NewAuthorizer(authorizerClient, appConfig.AuthorizerURL)
+	authorizer := authorizer.NewAuthorizer(httpClient, appConfig.AuthorizerURL)
 
-	customerRepositoryGateway := gateways.NewCustomerRepositoryGateway(postgresSQLClient)
 	productRepositoryGateway := gateways.NewProductRepositoryGateway(postgresSQLClient)
 	orderRepositoryGateway := gateways.NewOrderRepositoryGateway(postgresSQLClient)
 	paymentClient := gateways.NewPaymentClient(httpClient, appConfig.PaymentURL)
 
-	customerUsecase := usecases.NewCustomerUsecase(customerRepositoryGateway)
 	productUsecase := usecases.NewProductUsecase(productRepositoryGateway)
 	paymentUsecase := usecases.NewPaymentUsecase(paymentClient)
 	authorizerUsecase := usecases.NewAuthorizerUsecase(authorizer)
 	orderUsecase := usecases.NewOrderUsecase(authorizerUsecase, paymentUsecase, productUsecase, orderRepositoryGateway)
 
-	customerController := controllers.NewCustomerController(customerUsecase)
 	productController := controllers.NewProductController(productUsecase)
 	orderController := controllers.NewOrderController(orderUsecase)
 
 	apiParams := api.ApiParams{
-		CustomerController: customerController,
-		ProductController:  productController,
-		OrderController:    orderController,
+		ProductController: productController,
+		OrderController:   orderController,
 	}
 	api := api.NewApi(apiParams)
-	api.Run(":8080")
+	api.Run(":" + appConfig.Port)
 }
 
 func createPostgresSQLClient(appConfig configs.AppConfig) sql.SQLClient {
-	db, err := sql.NewPostgresSQLClient(appConfig.DatabaseUser, appConfig.DatabasePassword, appConfig.DatabaseHost, appConfig.DatabasePort, appConfig.DatabaseName)
+	db, err := sql.NewPostgresSQLClient(appConfig.DatabaseUser, appConfig.DatabasePassword, appConfig.DatabaseHost, appConfig.DatabasePort, appConfig.DatabaseName, appConfig.DatabaseSSLMode)
 	if err != nil {
 		panic(fmt.Errorf("failed to connect database, error %w", err))
 	}
@@ -67,14 +62,14 @@ func createPostgresSQLClient(appConfig configs.AppConfig) sql.SQLClient {
 	return db
 }
 
-func performMigrations(client sql.SQLClient) error {
+func performMigrations(client sql.SQLClient, migrationsPath string) error {
 	driver, err := postgres.WithInstance(client.GetConnection(), &postgres.Config{})
 	if err != nil {
 		return err
 	}
 
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://./migrations",
+		fmt.Sprintf("file://%s", migrationsPath),
 		"postgres", driver)
 	if err != nil {
 		return err

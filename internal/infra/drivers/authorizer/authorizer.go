@@ -43,7 +43,7 @@ func (a authorizer) AuthorizeUser(cpf string) (dto.AuthorizerResponse, error) {
 		return dto.AuthorizerResponse{}, err
 	}
 
-	if response.StatusCode < 00 || response.StatusCode > 299 {
+	if response.StatusCode < 200 || response.StatusCode > 299 {
 		return dto.AuthorizerResponse{}, ErrUnauthorized
 	}
 

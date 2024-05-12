@@ -45,14 +45,14 @@ func (u orderUsecase) GetAllOrders(pageParams dto.PageParams) (dto.Page[entities
 
 func (u orderUsecase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
 	// Authorize user
-	user, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
+	_, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
 	if err != nil {
 		log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
 		return dto.OrderCreationResponse{}, err
 	}
 
 	// Criar um pedido a partir do DTO
-	order := orderDTO.ToOrder(entities.Customer{ID: user.UserId})
+	order := orderDTO.ToOrder()
 
 	// Calcular o total dos produtos
 	totalAmount, err := u.calculateProducts(order.Items)
