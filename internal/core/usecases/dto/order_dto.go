@@ -63,18 +63,18 @@ type OrderDTO struct {
 	Status      OrderStatus    `json:"status" valid:"in(CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE),required~Status is invalid"`
 }
 
-func (o OrderDTO) ToOrder(customer entities.Customer) entities.Order {
+func (o OrderDTO) ToOrder() entities.Order {
 	orderItems := make([]entities.OrderItem, len(o.Items))
 	for i, item := range o.Items {
 		orderItems[i] = item.toOrderItem()
 	}
 
 	return entities.Order{
-		Items:     orderItems,
-		Coupon:    o.Coupon,
-		Customer:  &customer,
-		Status:    string(o.Status),
-		CreatedAt: time.Now(),
+		Items:       orderItems,
+		Coupon:      o.Coupon,
+		CustomerCPF: o.CustomerCPF,
+		Status:      string(o.Status),
+		CreatedAt:   time.Now(),
 	}
 }
 

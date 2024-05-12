@@ -19,15 +19,14 @@ import (
 func main() {
 	appConfig := configs.GetAppConfig()
 
-	httpClient := http.NewMockHttpClient()
+	httpClient := http.NewHttpClient(appConfig.DefaultTimeout)
 	postgresSQLClient := createPostgresSQLClient(appConfig)
 	err := performMigrations(postgresSQLClient, appConfig.DatabaseMigrationsPath)
 	if err != nil {
 		panic(err)
 	}
 
-	authorizerClient := http.NewHttpClient()
-	authorizer := authorizer.NewAuthorizer(authorizerClient, appConfig.AuthorizerURL)
+	authorizer := authorizer.NewAuthorizer(httpClient, appConfig.AuthorizerURL)
 
 	productRepositoryGateway := gateways.NewProductRepositoryGateway(postgresSQLClient)
 	orderRepositoryGateway := gateways.NewOrderRepositoryGateway(postgresSQLClient)
@@ -46,7 +45,7 @@ func main() {
 		OrderController:   orderController,
 	}
 	api := api.NewApi(apiParams)
-	api.Run(":8080")
+	api.Run(":" + appConfig.Port)
 }
 
 func createPostgresSQLClient(appConfig configs.AppConfig) sql.SQLClient {

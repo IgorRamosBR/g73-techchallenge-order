@@ -7,7 +7,7 @@ import (
 )
 
 type AuthorizerUsecase interface {
-	AuthorizeUser(cpf string) (dto.AuthorizerResponse, error)
+	AuthorizeUser(cpf string) (dto.AuthorizedUser, error)
 }
 
 type authorizerUsecase struct {
@@ -20,12 +20,12 @@ func NewAuthorizerUsecase(authorizer authorizer.Authorizer) AuthorizerUsecase {
 	}
 }
 
-func (u authorizerUsecase) AuthorizeUser(cpf string) (dto.AuthorizerResponse, error) {
+func (u authorizerUsecase) AuthorizeUser(cpf string) (dto.AuthorizedUser, error) {
 	authorizerResponse, err := u.authorizer.AuthorizeUser(cpf)
 	if err != nil {
 		log.Errorf("failed to authorize user, error: %v", err)
-		return dto.AuthorizerResponse{}, err
+		return dto.AuthorizedUser{}, err
 	}
 
-	return authorizerResponse, nil
+	return authorizerResponse.User, nil
 }

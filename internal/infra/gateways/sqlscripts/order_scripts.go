@@ -46,7 +46,7 @@ const FindOrderStatusByIdQuery = `
 `
 
 const InsertOrderCmd = `
-	INSERT INTO public.orders(coupon, total_amount, customer_id, status, created_at)
+	INSERT INTO public.orders(coupon, total_amount, customer_cpf, status, created_at)
 	VALUES ($1, $2, $3, $4, $5) RETURNING id
 `
 

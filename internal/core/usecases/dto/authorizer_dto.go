@@ -1,7 +1,13 @@
 package dto
 
 type AuthorizerResponse struct {
-	UserId       int    `json:"userId"`
-	IsAuthorized bool   `json:"isAuthorized"`
-	Message      string `json:"message"`
+	IsAuthorized bool           `json:"isAuthorized"`
+	Message      string         `json:"message"`
+	User         AuthorizedUser `json:"user"`
+}
+
+type AuthorizedUser struct {
+	CPF   string `json:"cpf"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }

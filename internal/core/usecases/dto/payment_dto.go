@@ -2,6 +2,7 @@ package dto
 
 type PaymentRequest struct {
 	OrderId     int                  `json:"orderId"`
+	CustomerCpf string               `json:"customerCpf"`
 	Items       []PaymentItemRequest `json:"items"`
 	TotalAmount float64              `json:"totalAmount"`
 }
@@ -21,6 +22,5 @@ type PaymentProductRequest struct {
 }
 
 type PaymentQRCodeResponse struct {
-	QrData       string `json:"qr_data"`
-	StoreOrderId string `json:"in_store_order_id"`
+	QrCode string `json:"qrcode"`
 }

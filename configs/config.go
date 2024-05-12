@@ -2,9 +2,11 @@ package configs
 
 import (
 	"os"
+	"time"
 )
 
 type AppConfig struct {
+	Port                   string
 	DatabaseHost           string
 	DatabasePort           string
 	DatabaseName           string
@@ -13,18 +15,15 @@ type AppConfig struct {
 	DatabaseSSLMode        string
 	DatabaseMigrationsPath string
 
-	AuthorizerURL string
-
-	SQSRegion   string
-	SQSEndpoint string
-
-	PaymentURL      string
-	NotificationURL string
-	SponsorId       string
+	AuthorizerURL  string
+	PaymentURL     string
+	DefaultTimeout time.Duration
 }
 
 func GetAppConfig() AppConfig {
 	appConfig := AppConfig{}
+
+	appConfig.Port = os.Getenv("PORT")
 
 	appConfig.DatabaseHost = os.Getenv("POSTGRES_HOST")
 	appConfig.DatabasePort = os.Getenv("POSTGRES_PORT")
@@ -35,8 +34,14 @@ func GetAppConfig() AppConfig {
 	appConfig.DatabaseMigrationsPath = os.Getenv("MIGRATIONS_PATH")
 
 	appConfig.AuthorizerURL = os.Getenv("AUTHORIZER_URL")
+	appConfig.PaymentURL = os.Getenv("PAYMENT_URL")
 
-	appConfig.PaymentURL = os.Getenv("PAYMENT_API_URL")
+	defaultTimeout := os.Getenv("DEFAULT_TIMEOUT")
+	defaultTimeoutDuration, err := time.ParseDuration(defaultTimeout)
+	if err != nil {
+		panic(err)
+	}
+	appConfig.DefaultTimeout = defaultTimeoutDuration
 
 	return appConfig
 }

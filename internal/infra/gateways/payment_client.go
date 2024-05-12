@@ -2,6 +2,7 @@ package gateways
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
@@ -35,6 +36,10 @@ func (p paymentAPIClient) GeneratePaymentQRCode(request dto.PaymentRequest) (dto
 		return dto.PaymentQRCodeResponse{}, fmt.Errorf("failed to call mercado pago broker, error: %v", err)
 	}
 	defer response.Body.Close()
+
+	if response.StatusCode < 200 || response.StatusCode > 299 {
+		return dto.PaymentQRCodeResponse{}, errors.New("failed to pay order")
+	}
 
 	var paymentQRCodeResponse dto.PaymentQRCodeResponse
 	err = json.NewDecoder(response.Body).Decode(&paymentQRCodeResponse)

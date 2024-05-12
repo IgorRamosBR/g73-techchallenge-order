@@ -61,7 +61,7 @@ func (r orderRepositoryGateway) SaveOrder(order entities.Order) (int, error) {
 		return -1, fmt.Errorf("failed to create a transaction, error %w", err)
 	}
 
-	row := tx.ExecWithReturn(sqlscripts.InsertOrderCmd, order.Coupon, order.TotalAmount, order.Customer.ID, order.Status, order.CreatedAt)
+	row := tx.ExecWithReturn(sqlscripts.InsertOrderCmd, order.Coupon, order.TotalAmount, order.CustomerCPF, order.Status, order.CreatedAt)
 
 	var orderId int
 	err = row.Scan(&orderId)

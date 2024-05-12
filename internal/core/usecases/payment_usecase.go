@@ -30,7 +30,7 @@ func (u paymentUsecase) GeneratePaymentQRCode(order entities.Order) (string, err
 		return "", err
 	}
 
-	return paymentResponse.QrData, nil
+	return paymentResponse.QrCode, nil
 }
 
 func (u paymentUsecase) createPaymentRequest(order entities.Order) dto.PaymentRequest {
@@ -41,6 +41,7 @@ func (u paymentUsecase) createPaymentRequest(order entities.Order) dto.PaymentRe
 
 	return dto.PaymentRequest{
 		OrderId:     order.ID,
+		CustomerCpf: order.CustomerCPF,
 		TotalAmount: order.TotalAmount,
 		Items:       items,
 	}

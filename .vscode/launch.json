@@ -5,19 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Package",
+            "name": "Run Order API",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
             "env": {
+                "PORT": "8080",
                 "POSTGRES_HOST": "localhost",
                 "POSTGRES_PORT": "5432",
                 "POSTGRES_DB": "g73_lanches",
                 "POSTGRES_SSLMODE": "?sslmode=disable",
                 "POSTGRES_USER": "admin",
                 "POSTGRES_PASSWORD": "admin",
-                "MIGRATIONS_PATH": "../migrations"
+                "MIGRATIONS_PATH": "../migrations",
+                "AUTHORIZER_URL": "https://fzmgicpudl.execute-api.us-east-1.amazonaws.com/v1/authorize",
+                "PAYMENT_URL": "http://localhost:8081/v1/paymentOrder",
+                "DEFAULT_TIMEOUT": "500ms"
             }
         }
     ]

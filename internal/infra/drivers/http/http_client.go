@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	httpClient "net/http"
+	"time"
 )
 
 type HttpClient interface {
@@ -14,9 +15,11 @@ type client struct {
 	client *httpClient.Client
 }
 
-func NewHttpClient() HttpClient {
+func NewHttpClient(timeout time.Duration) HttpClient {
 	return client{
-		client: &httpClient.Client{},
+		client: &httpClient.Client{
+			Timeout: timeout,
+		},
 	}
 }
 
