@@ -13,7 +13,7 @@
             "env": {
                 "POSTGRES_HOST": "localhost",
                 "POSTGRES_PORT": "5432",
-                "POSTGRES_DB": "g37_lanches",
+                "POSTGRES_DB": "g73_lanches",
                 "POSTGRES_SSLMODE": "?sslmode=disable",
                 "POSTGRES_USER": "admin",
                 "POSTGRES_PASSWORD": "admin",
