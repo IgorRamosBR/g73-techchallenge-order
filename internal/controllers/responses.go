@@ -40,7 +40,7 @@ func handleUnauthorizedResponse(c *gin.Context, message string, err error) {
 		Message: message,
 		Err:     err.Error(),
 	}
-	c.JSON(http.StatusUnauthorized, unauthorizedError)
+	c.JSON(http.StatusForbidden, unauthorizedError)
 }
 
 func handleInternalServerResponse(c *gin.Context, message string, err error) {

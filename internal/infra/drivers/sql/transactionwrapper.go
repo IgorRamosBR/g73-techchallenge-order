@@ -1,11 +1,14 @@
 package sql
 
-import "database/sql"
+import (
+	"database/sql"
+	"errors"
+)
 
 type TransactionWrapper interface {
 	Find(query string, args ...any) (RowsWrapper, error)
 	FindOne(query string, args ...any) RowWrapper
-	Exec(query string, args ...any) (sql.Result, error)
+	Exec(query string, args ...any) (ResultWrapper, error)
 	ExecWithReturn(query string, args ...any) RowWrapper
 	Commit() error
 	Rollback() error
@@ -31,7 +34,7 @@ func (t transactionWrapper) FindOne(query string, args ...any) RowWrapper {
 	return NewRowWrapper(row)
 }
 
-func (t transactionWrapper) Exec(query string, args ...any) (sql.Result, error) {
+func (t transactionWrapper) Exec(query string, args ...any) (ResultWrapper, error) {
 	result, err := t.tx.Exec(query, args...)
 	return result, err
 }
@@ -48,5 +51,9 @@ func (t transactionWrapper) Commit() error {
 
 func (t transactionWrapper) Rollback() error {
 	err := t.tx.Rollback()
+	// skip the log if a transaction has already been committed or rolled back
+	if err != nil && errors.Is(err, sql.ErrTxDone) {
+		return nil
+	}
 	return err
 }

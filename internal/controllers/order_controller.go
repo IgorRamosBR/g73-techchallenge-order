@@ -42,7 +42,7 @@ func (c OrderController) CreateOrder(ctx *gin.Context) {
 			handleUnauthorizedResponse(ctx, "customer cpf invalid", err)
 			return
 		}
-		handleInternalServerResponse(ctx, "failed to create product", err)
+		handleInternalServerResponse(ctx, "failed to create order", err)
 		return
 	}
 

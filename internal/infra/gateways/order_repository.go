@@ -60,6 +60,7 @@ func (r orderRepositoryGateway) SaveOrder(order entities.Order) (int, error) {
 	if err != nil {
 		return -1, fmt.Errorf("failed to create a transaction, error %w", err)
 	}
+	defer tx.Rollback()
 
 	row := tx.ExecWithReturn(sqlscripts.InsertOrderCmd, order.Coupon, order.TotalAmount, order.CustomerCPF, order.Status, order.CreatedAt)
 
@@ -106,7 +107,7 @@ func (r orderRepositoryGateway) getOrderItems(orderId int) ([]entities.OrderItem
 	orderItems := []entities.OrderItem{}
 	err := r.sqlClient.Find(&orderItems, sqlscripts.FindOrderItems, orderId)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find order items, error %w", err)
+		return nil, err
 	}
 
 	return orderItems, nil

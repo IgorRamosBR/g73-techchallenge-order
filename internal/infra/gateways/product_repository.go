@@ -80,7 +80,7 @@ func (r productRepositoryGateway) UpdateProduct(id int, product entities.Product
 	result, err := r.sqlClient.Exec(updateProductCmd, id, product.Name, product.SkuId, product.Description, product.Category,
 		product.Price, product.UpdatedAt)
 	if err != nil {
-		return fmt.Errorf("failed to update the product [%d], error %w", id, err)
+		return fmt.Errorf("failed to update product [%d], error %w", id, err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
@@ -100,7 +100,7 @@ func (r productRepositoryGateway) DeleteProduct(id int) error {
 
 	result, err := r.sqlClient.Exec(deleteProductCmd, id)
 	if err != nil {
-		return fmt.Errorf("failed to delete the product [%d], error %v", id, err)
+		return fmt.Errorf("failed to delete product [%d], error %v", id, err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
