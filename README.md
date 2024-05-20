@@ -165,7 +165,7 @@ Criar API Deployment
   kubectl apply -f api-deployment.yaml
 ```
 
-## Documentação
+## Documentação e Coverage
 [Documentation](https://github.com/IgorRamosBR/g73-techchallenge-order/tree/master/docs)
 
 
