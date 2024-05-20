@@ -1,113 +1,38 @@
 openapi: 3.0.3
 info:
-  title: API de Realização de Pedidos e Pagamento de Lanches - g37-lanches
+  title: API de Realização de Pedidos -  g73-techchallenge-order
   description: |- 
-    A API de Realização de Pedidos e Pagamento de Lanches, denominada "g37-lanches," oferece uma solução eficiente para a realização de pedidos e pagamento em uma lanchonete. Os clientes podem navegar pelo menu, escolher produtos individualmente, criar combos personalizados e efetuar o pagamento de forma simples e conveniente.
+    Este é um microsserviço responsável por criar produtos e gerenciar pedidos online para uma lanchonete. Ele oferece endpoints para criar, atualizar, buscar e listar pedidos, além de interagir com produtos e processar pagamentos.
 
     **Funcionalidades Principais:**
 
-    1. **Realização do Pedido e Pagamento:**
-       - Os clientes começam o processo de pedido utilizando o sistema de autoatendimento, onde podem selecionar produtos individualmente ou montar seus próprios combos.
-       - O sistema fornece informações detalhadas sobre os produtos, incluindo nome, imagem, descrição e preço.
-       - Os clientes têm a opção de adicionar produtos à sacola e, em seguida, prosseguir para o pagamento.
-       - O processo de pagamento inclui um resumo do pedido, a possibilidade de inserir cupons promocionais e fornecer informações de identificação para receber promoções.
-       - O pagamento é realizado por meio do aplicativo do Mercado Pago, com a leitura do QR Code.
+      - **Criar Pedido:** Permite que os clientes criem novos pedidos adicionando produtos ao carrinho.
+      - **Atualizar Pedido:** Permite atualizar o status dos pedidos.
+      - **Listar Pedidos:** Fornece uma lista de todos os pedidos, filtrada por diferentes critérios.
+      - **Buscar Pedido por ID:** Permite buscar um pedido específico pelo seu ID.
+      - **Gerar QR Code de Pagamento:** Gera um QR code para processar pagamentos dos pedidos.
     
     links úteis:
-    - [Repositório do Projeto ](https://github.com/IgorRamosBR/g37-techchallenge)
-    - [Documentação DDD](https://docs.google.com/document/d/1cOhK9ychHcw6xCaa9AuH9t98FAmcPHPYo1ob395zgKE/edit#heading=h.69nvor85beny)
+    - [Repositório do Projeto ](https://github.com/IgorRamosBR/g73-techchallenge-order)
   version: 1.0.11
 servers:
   - url: http://localhost:8080/v1/
 tags:
-  - name: customers
-    description: Operações sobre os clientes
-  - name: product
+  - name: products
     description: Operações sobre os produtos
   - name: orders
     description: Operações sobre as ordens de pedido e pagamento
 
 paths:
-  /customers:
+  /products:
     post:
       tags:
-        - customers
-      summary: Cadastrar cliente
-      operationId: createCustomer
-      requestBody:
-        description: Objeto do cliente criado
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: Bruno
-                cpf:
-                  type: string
-                  example: '83397074690'
-                email:
-                  type: string
-                  example: bruno.carneiro@glive.com
-      responses:
-        '200':
-          description: 'OK'
-      
-    get:
-      tags:
-        - customers
-      summary: Buscar clientes através do CPF ou id
-      parameters:
-      - in: query
-        name: cpf
-        schema:
-          type: string
-          example: '83397074690'
-        required: false
-      - in: query
-        name: id
-        schema:
-          type: number
-          example: '1'
-        required: false
-      responses:
-        '200':
-          description: 'OK'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                    example: 1
-                  createdAt:
-                    type: string
-                    example: '2023-10-31T10:41:38.816861Z'
-                  updatedAt:
-                    type: string
-                    example: '2023-10-31T10:41:38.816861Z'
-                  name:
-                    type: string
-                    example: 'Bruno'
-                  cpf:
-                    type: string
-                    example: '83397074690'
-                  email:
-                    type: string
-                    example: 'bruno.carneiro@live.com'
-
-  
-  /product:
-    post:
-      tags:
-        - product
+        - products
       summary: Adicione um novo produto à loja
       description: Adicione um novo produto à loja
       operationId: createProduct
       requestBody:
+        required: true
         description: Crie um novo produto na loja
         content:
           application/json:
@@ -136,7 +61,7 @@ paths:
           
     get:
       tags:
-        - product
+        - products
       summary: Buscar todos os produtos ou por categoria
       description: Procurar um produto por categoria
       operationId: GetProductsByCategory
@@ -198,15 +123,12 @@ paths:
                         price:
                           type: number
                           example: 40
-                  next:
-                    type: number
-                    example: 1
          
 
   /product/{id}:
     put:
       tags:
-        - product
+        - products
       summary: Atualizar um produto existente
       description: Atualizar produto existente por ID
       operationId: updateProduct
@@ -220,6 +142,7 @@ paths:
             format: int64
             example: 4
       requestBody:
+        required: true
         description: Atualizar um produto existente na loja
         content:
           application/json:
@@ -268,7 +191,7 @@ paths:
                     example: 16.00          
     delete:
       tags:
-        - product
+        - products
       summary: Deletar produto
       description: Delete um produto
       operationId: DeleteProduct por ID
@@ -296,6 +219,7 @@ paths:
       description: Criar pedidos com itens unitários, combos prontos ou combos personalizados. Sendo que para os itens unitários e os combos prontos, a lista de productIds deverá conter apenas um único ID.
       operationId: createOrdersCustom
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -450,7 +374,7 @@ paths:
  
 
  
-  /get/{id}/status:
+  /orders/{id}/status:
     get:
       tags:
         - orders
@@ -494,7 +418,7 @@ paths:
     
     
     
-  /orders/{id}/status: 
+  /orders/{id}/Status: 
    put:
       tags:
         - orders
@@ -511,6 +435,7 @@ paths:
             format: int64
             example: 4
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -523,52 +448,3 @@ paths:
         '200':
           description: 'OK'
           
-  /orders/{id}/payment:
-    put:
-      tags:
-        - orders
-      summary: Atualizar pagamento de um pedido
-      description: Atualizar o pagamento de um pedido
-      operationId: CreateOrderPayment
-      parameters: 
-        - name: id
-          in: path
-          description: ID do pedido que terá o pagamento atualizado
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 4
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                Id:
-                  type: string
-                  example: "1"
-                LiveMode:
-                  type: boolean
-                  example: true
-                Type:
-                  type: string
-                  example: "payment"
-                DateCreated:
-                  type: string
-                  example: "2024-01-29T12:00:00Z"
-                UserId:
-                  type: integer
-                  example: 1    
-                ApiVersion:
-                  type: string
-                  example: "v1"
-                Action:
-                  type: string
-                  example: "paymentAction"
-                Data:
-                  type: string
-                  example: "Id"                      
-      responses:
-        '200':
-          description: 'OK'
