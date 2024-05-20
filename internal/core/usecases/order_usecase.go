@@ -13,7 +13,6 @@ type OrderUsecase interface {
 	GetOrderStatus(orderId int) (dto.OrderStatusDTO, error)
 	UpdateOrderStatus(orderId int, orderStatus string) error
 	CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error)
-	CreateOrderPayment(orderId int) error
 }
 
 type orderUsecase struct {
@@ -143,16 +142,6 @@ func (u orderUsecase) GetOrderStatus(orderId int) (dto.OrderStatusDTO, error) {
 func (u orderUsecase) UpdateOrderStatus(orderId int, orderStatus string) error {
 	err := u.orderRepositoryGateway.UpdateOrderStatus(orderId, orderStatus)
 	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (u orderUsecase) CreateOrderPayment(orderId int) error {
-	err := u.orderRepositoryGateway.UpdateOrderStatus(orderId, string(dto.OrderStatusPaid))
-	if err != nil {
-		log.Errorf("failed to update order status from order id [%d], error: %v", orderId, err)
 		return err
 	}
 

@@ -42,7 +42,7 @@ func (c OrderController) CreateOrder(ctx *gin.Context) {
 			handleUnauthorizedResponse(ctx, "customer cpf invalid", err)
 			return
 		}
-		handleInternalServerResponse(ctx, "failed to create product", err)
+		handleInternalServerResponse(ctx, "failed to create order", err)
 		return
 	}
 
@@ -53,6 +53,7 @@ func (c OrderController) GetAllOrders(ctx *gin.Context) {
 	pageParams, err := getPageParams(ctx)
 	if err != nil {
 		handleBadRequestResponse(ctx, "invalid query parameters", err)
+		return
 	}
 
 	page, err := c.orderUsecase.GetAllOrders(pageParams)

@@ -26,6 +26,7 @@ func (c ProductController) GetProducts(ctx *gin.Context) {
 	pageParams, err := getPageParams(ctx)
 	if err != nil {
 		handleBadRequestResponse(ctx, "invalid query parameters", err)
+		return
 	}
 
 	if category != "" {
@@ -85,7 +86,7 @@ func (c ProductController) UpdateProduct(ctx *gin.Context) {
 			handleNotFoundResponse(ctx, "product not found", err)
 			return
 		}
-		handleInternalServerResponse(ctx, "failed to create product", err)
+		handleInternalServerResponse(ctx, "failed to update product", err)
 		return
 	}
 
