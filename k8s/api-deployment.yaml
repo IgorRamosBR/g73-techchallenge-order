@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: g37-lanches-api-deployment
+  name: g73-order-api-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: g37-lanches-api
+      app: g73-order-api
   template:
     metadata:
       labels:
-        app: g37-lanches-api
+        app: g73-order-api
     spec:
       containers:
-        - name: g37-lanches-api
-          image: igorramos/g37-lanches-api:production
+        - name: g73-order-api
+          image: igorramos/g73-order-api:production
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -22,7 +22,7 @@ spec:
             - name: ENVIRONMENT
               value: prod
             - name: AUTHORIZER_URL
-              value: 'https://o1kfue6x0c.execute-api.us-east-1.amazonaws.com/production/auth'
+              value: 'https://fzmgicpudl.execute-api.us-east-1.amazonaws.com/v1/authorize'
             - name: POSTGRES_HOST
               value: 'g73-techchallenge-db.cxokeewukuer.us-east-1.rds.amazonaws.com'
             - name: POSTGRES_DB
@@ -39,6 +39,10 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: POSTGRES_PASSWORD
+            - name: PAYMENT_URL
+              value: ''
+            - name: DEFAULT_TIMEOUT
+              value: '500ms'
                 
           resources:
             limits:
