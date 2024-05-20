@@ -53,6 +53,7 @@ func (c OrderController) GetAllOrders(ctx *gin.Context) {
 	pageParams, err := getPageParams(ctx)
 	if err != nil {
 		handleBadRequestResponse(ctx, "invalid query parameters", err)
+		return
 	}
 
 	page, err := c.orderUsecase.GetAllOrders(pageParams)

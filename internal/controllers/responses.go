@@ -11,14 +11,6 @@ type ErrorResponse struct {
 	Err     string `json:"error"`
 }
 
-func handleNotFoundRequestResponse(c *gin.Context, message string, err error) {
-	notFoundRequestError := ErrorResponse{
-		Message: message,
-		Err:     err.Error(),
-	}
-	c.JSON(http.StatusNotFound, notFoundRequestError)
-}
-
 func handleBadRequestResponse(c *gin.Context, message string, err error) {
 	badRequestError := ErrorResponse{
 		Message: message,

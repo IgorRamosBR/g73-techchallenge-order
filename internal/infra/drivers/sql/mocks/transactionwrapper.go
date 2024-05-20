@@ -5,7 +5,6 @@
 //
 //	mockgen -source=transactionwrapper.go -destination=mocks/transactionwrapper.go
 //
-
 // Package mock_sql is a generated GoMock package.
 package mock_sql
 
@@ -90,26 +89,6 @@ func (mr *MockTransactionWrapperMockRecorder) ExecWithReturn(query any, args ...
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]any{query}, args...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecWithReturn", reflect.TypeOf((*MockTransactionWrapper)(nil).ExecWithReturn), varargs...)
-}
-
-// Find mocks base method.
-func (m *MockTransactionWrapper) Find(query string, args ...any) (sql.RowsWrapper, error) {
-	m.ctrl.T.Helper()
-	varargs := []any{query}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Find", varargs...)
-	ret0, _ := ret[0].(sql.RowsWrapper)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Find indicates an expected call of Find.
-func (mr *MockTransactionWrapperMockRecorder) Find(query any, args ...any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]any{query}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTransactionWrapper)(nil).Find), varargs...)
 }
 
 // FindOne mocks base method.
