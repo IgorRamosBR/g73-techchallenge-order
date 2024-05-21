@@ -4,6 +4,29 @@
 
 Este é um microsserviço responsável por criar produtos e gerenciar pedidos online para uma lanchonete. Ele oferece endpoints para criar, atualizar, buscar e listar pedidos, além de interagir com produtos e processar pagamentos.
 
+## Test coverage
+
+### Como executar
+``` bash
+go test ./...  -coverpkg=./... -coverprofile ./coverage.out
+go tool cover -func ./coverage.out
+```
+
+### Resultado
+```bash
+github.com/g73-techchallenge-order/internal/infra/gateways/payment_client.go:21:                NewPaymentClient                100.0%
+github.com/g73-techchallenge-order/internal/infra/gateways/payment_client.go:28:                GeneratePaymentQRCode           92.9%
+github.com/g73-techchallenge-order/internal/infra/gateways/product_repository.go:25:            NewProductRepositoryGateway     100.0%
+github.com/g73-techchallenge-order/internal/infra/gateways/product_repository.go:31:            FindAllProducts                 100.0%
+github.com/g73-techchallenge-order/internal/infra/gateways/product_repository.go:43:            FindProductsByCategory          100.0%
+github.com/g73-techchallenge-order/internal/infra/gateways/product_repository.go:55:            FindProductById                 100.0%
+github.com/g73-techchallenge-order/internal/infra/gateways/product_repository.go:65:            SaveProduct                     100.0%
+github.com/g73-techchallenge-order/internal/infra/gateways/product_repository.go:77:            UpdateProduct                   100.0%
+github.com/g73-techchallenge-order/internal/infra/gateways/product_repository.go:98:            DeleteProduct                   100.0%
+total:                                                                                          (statements)                    83.5%
+```
+
+Total: 83.5%
 
 ## Tecnologias Utilizadas
 
