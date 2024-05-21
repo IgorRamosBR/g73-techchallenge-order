@@ -43,6 +43,8 @@ spec:
               value: ''
             - name: DEFAULT_TIMEOUT
               value: '500ms'
+            - name: MIGRATIONS_PATH
+              value: './migrations'
                 
           resources:
             limits:
