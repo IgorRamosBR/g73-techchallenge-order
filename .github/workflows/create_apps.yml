@@ -5,10 +5,6 @@ on:
 
 env:
   EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
-  POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
-  POSTGRES_DBNAME: ${{ vars.POSTGRES_DBNAME }}
-  POSTGRES_USER: ${{ secrets.POSTGRES_USERNAME }}
-  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
 jobs:
   apply:
