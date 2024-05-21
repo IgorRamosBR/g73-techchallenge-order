@@ -12,6 +12,7 @@ spec:
       labels:
         app: g73-order-api
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: g73-order-api
           image: igorramos/g73-order-api:production
