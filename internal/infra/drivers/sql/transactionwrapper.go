@@ -34,8 +34,7 @@ func (t transactionWrapper) Exec(query string, args ...any) (ResultWrapper, erro
 }
 
 func (t transactionWrapper) ExecWithReturn(query string, args ...any) RowWrapper {
-	row := t.tx.QueryRow(query, args...)
-	return NewRowWrapper(row)
+	return t.FindOne(query, args...)
 }
 
 func (t transactionWrapper) Commit() error {
