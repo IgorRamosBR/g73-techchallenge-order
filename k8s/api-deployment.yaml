@@ -12,40 +12,41 @@ spec:
       labels:
         app: g73-order-api
     spec:
-      automountServiceAccountToken: false
       containers:
         - name: g73-order-api
-          image: igorramos/g73-order-api:production
-          imagePullPolicy: Always
+          image: igorramos/g73-order-api:v1.0.3
           ports:
             - containerPort: 8080
           env:
             - name: ENVIRONMENT
-              value: prod
-            - name: AUTHORIZER_URL
-              value: 'https://fzmgicpudl.execute-api.us-east-1.amazonaws.com/v1/authorize'
+              value: dev
             - name: POSTGRES_HOST
-              value: 'g73-techchallenge-db.cxokeewukuer.us-east-1.rds.amazonaws.com'
+              value: postgres
             - name: POSTGRES_DB
-              value: 'techchallengedb'
-            - name: POSTGRES_PORT
-              value: '5432'
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
-                secretKeyRef:
-                  name: db-secret
+                configMapKeyRef:
+                  name: postgres-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
-                secretKeyRef:
-                  name: db-secret
+                configMapKeyRef:
+                  name: postgres-secret
                   key: POSTGRES_PASSWORD
-            - name: PAYMENT_URL
-              value: ''
-            - name: DEFAULT_TIMEOUT
-              value: '500ms'
+            - name: POSTGRES_PORT
+              value: '5432'
+            - name: POSTGRES_SSLMODE
+              value: '?sslmode=disable'
             - name: MIGRATIONS_PATH
-              value: './migrations'
+              value: "../migrations"
+            - name: DEFAULT_TIMEOUT
+              value: 10s
+            - name: PORT
+              value: '8080'
                 
           resources:
             limits:
@@ -54,12 +55,3 @@ spec:
             requests:
               cpu: "0.25"
               memory: "256Mi"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: role
-                operator: In
-                values:
-                - general
