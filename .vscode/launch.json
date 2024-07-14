@@ -21,6 +21,10 @@
                 "MIGRATIONS_PATH": "../migrations",
                 "AUTHORIZER_URL": "https://fzmgicpudl.execute-api.us-east-1.amazonaws.com/v1/authorize",
                 "PAYMENT_URL": "http://localhost:8081/v1/paymentOrder",
+                "ORDER_EVENTS_BROKER_URL": "amqp://techchallenge:admin123@localhost:5672/",
+                "ORDER_EVENTS_TOPIC": "order_events",
+                "ORDER_EVENTS_PAID_QUEUE": "orders_payment_queue",
+                "ORDER_EVENTS_READY_QUEUE": "orders_ready_queue",
                 "DEFAULT_TIMEOUT": "500ms"
             }
         }

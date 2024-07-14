@@ -26,7 +26,7 @@ var orderResponseValid, _ = os.ReadFile("./testdata/order_response_valid.json")
 
 func TestOrderController_CreateOrder(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	orderUseCase := mock_usecases.NewMockOrderUsecase(ctrl)
+	orderUseCase := mock_usecases.NewMockOrderUseCase(ctrl)
 	orderController := NewOrderController(orderUseCase)
 
 	gin.SetMode(gin.TestMode)
@@ -150,7 +150,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 func TestOrderController_GetAllOrders(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	orderUseCase := mock_usecases.NewMockOrderUsecase(ctrl)
+	orderUseCase := mock_usecases.NewMockOrderUseCase(ctrl)
 	orderController := NewOrderController(orderUseCase)
 
 	gin.SetMode(gin.TestMode)
@@ -254,7 +254,7 @@ func TestOrderController_GetAllOrders(t *testing.T) {
 
 func TestOrderController_GetOrderStatus(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	orderUseCase := mock_usecases.NewMockOrderUsecase(ctrl)
+	orderUseCase := mock_usecases.NewMockOrderUseCase(ctrl)
 	orderController := NewOrderController(orderUseCase)
 
 	gin.SetMode(gin.TestMode)
@@ -353,7 +353,7 @@ func TestOrderController_GetOrderStatus(t *testing.T) {
 
 func TestOrderController_UpdateOrderStatus(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	orderUseCase := mock_usecases.NewMockOrderUsecase(ctrl)
+	orderUseCase := mock_usecases.NewMockOrderUseCase(ctrl)
 	orderController := NewOrderController(orderUseCase)
 
 	gin.SetMode(gin.TestMode)

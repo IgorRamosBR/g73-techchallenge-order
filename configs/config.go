@@ -15,8 +15,14 @@ type AppConfig struct {
 	DatabaseSSLMode        string
 	DatabaseMigrationsPath string
 
-	AuthorizerURL  string
-	PaymentURL     string
+	AuthorizerURL string
+	PaymentURL    string
+
+	OrderEventsBrokerUrl  string
+	OrderEventsTopic      string
+	OrderEventsPaidQueue  string
+	OrderEventsReadyQueue string
+
 	DefaultTimeout time.Duration
 }
 
@@ -35,6 +41,11 @@ func GetAppConfig() AppConfig {
 
 	appConfig.AuthorizerURL = os.Getenv("AUTHORIZER_URL")
 	appConfig.PaymentURL = os.Getenv("PAYMENT_URL")
+
+	appConfig.OrderEventsBrokerUrl = os.Getenv("ORDER_EVENTS_BROKER_URL")
+	appConfig.OrderEventsTopic = os.Getenv("ORDER_EVENTS_TOPIC")
+	appConfig.OrderEventsPaidQueue = os.Getenv("ORDER_EVENTS_PAID_QUEUE")
+	appConfig.OrderEventsReadyQueue = os.Getenv("ORDER_EVENTS_READY_QUEUE")
 
 	defaultTimeout := os.Getenv("DEFAULT_TIMEOUT")
 	defaultTimeoutDuration, err := time.ParseDuration(defaultTimeout)

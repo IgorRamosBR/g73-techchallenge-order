@@ -11,6 +11,7 @@ import (
 
 type OrderRepositoryGateway interface {
 	FindAllOrders(pageParams dto.PageParams) ([]entities.Order, error)
+	FindOrderById(orderId int) (entities.Order, error)
 	GetOrderStatus(orderId int) (string, error)
 	SaveOrder(order entities.Order) (int, error)
 	UpdateOrderStatus(orderId int, orderStatus string) error
@@ -43,6 +44,22 @@ func (r orderRepositoryGateway) FindAllOrders(pageParams dto.PageParams) ([]enti
 	}
 
 	return orders, nil
+}
+
+func (r orderRepositoryGateway) FindOrderById(orderId int) (entities.Order, error) {
+	var order entities.Order
+	err := r.sqlClient.FindOne(&order, sqlscripts.FindOrderByIdQuery, orderId)
+	if err != nil {
+		return entities.Order{}, fmt.Errorf("failed to find order, error %w", err)
+	}
+
+	orderItems, err := r.getOrderItems(orderId)
+	if err != nil {
+		return entities.Order{}, fmt.Errorf("failed to get order items, error %w", err)
+	}
+
+	order.Items = orderItems
+	return order, nil
 }
 
 func (r orderRepositoryGateway) GetOrderStatus(orderId int) (string, error) {

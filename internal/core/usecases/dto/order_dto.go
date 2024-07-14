@@ -16,6 +16,7 @@ const (
 	OrderStatusPaid       OrderStatus = "PAID"
 	OrderStatusReceived   OrderStatus = "RECEIVED"
 	OrderStatusInProgress OrderStatus = "IN_PROGRESS"
+	OrderStatusExpired    OrderStatus = "EXPIRED"
 	OrderStatusReady      OrderStatus = "READY"
 	OrderStatusDone       OrderStatus = "DONE"
 )
