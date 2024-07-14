@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/broker"
+	"github.com/g73-techchallenge-order/pkg/drivers/broker"
+	"github.com/g73-techchallenge-order/pkg/events"
 )
 
 type OrderNotify interface {
-	NotifyPaymentOrder(order dto.ProductionOrderDTO) error
+	NotifyPaymentOrder(order events.OrderProductionDTO) error
 }
 
 type orderNotify struct {
@@ -26,7 +26,7 @@ func NewOrderNotify(publisher broker.Publisher, destination string) OrderNotify 
 	return orderNotify{publisher: publisher, destination: destination}
 }
 
-func (o orderNotify) NotifyPaymentOrder(order dto.ProductionOrderDTO) error {
+func (o orderNotify) NotifyPaymentOrder(order events.OrderProductionDTO) error {
 	message, err := json.Marshal(order)
 	if err != nil {
 		return fmt.Errorf("failed to marshal payment order[%d], error: %v", order.ID, err)

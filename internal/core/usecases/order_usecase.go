@@ -4,6 +4,7 @@ import (
 	"github.com/g73-techchallenge-order/internal/core/entities"
 	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
 	"github.com/g73-techchallenge-order/internal/infra/gateways"
+	"github.com/g73-techchallenge-order/pkg/events"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -135,7 +136,7 @@ func (u *orderUseCase) NotifyOrderPaid(orderId int) error {
 		return err
 	}
 
-	productionOrder := dto.ToProductionOrderDTO(order)
+	productionOrder := ToProductionOrderDTO(order)
 	err = u.orderNotify.NotifyPaymentOrder(productionOrder)
 	if err != nil {
 		return err
@@ -184,4 +185,32 @@ func (u *orderUseCase) saveOrder(order entities.Order) (int, error) {
 	}
 
 	return orderId, nil
+}
+
+func ToProductionOrderDTO(order entities.Order) events.OrderProductionDTO {
+	productionOrder := events.OrderProductionDTO{
+		ID:     order.ID,
+		Status: order.Status,
+		Items:  toProductionOrderItemDTO(order.Items),
+	}
+
+	return productionOrder
+}
+
+func toProductionOrderItemDTO(orderItems []entities.OrderItem) []events.OrderItemProductionDTO {
+	productionOrderItems := []events.OrderItemProductionDTO{}
+	for _, item := range orderItems {
+		productionOrderItem := events.OrderItemProductionDTO{
+			Quantity: item.ID,
+			Type:     item.Type,
+			Products: events.OrderProductionProductDTO{
+				Name:        item.Product.Name,
+				Description: item.Product.Description,
+				Category:    item.Product.Category,
+			},
+		}
+		productionOrderItems = append(productionOrderItems, productionOrderItem)
+	}
+
+	return productionOrderItems
 }
