@@ -1,10 +1,10 @@
 package usecases
 
 import (
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/gateways"
-	"github.com/g73-techchallenge-order/pkg/events"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways"
+	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events"
 
 	log "github.com/sirupsen/logrus"
 )

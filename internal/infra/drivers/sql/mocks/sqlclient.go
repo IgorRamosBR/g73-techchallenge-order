@@ -13,7 +13,7 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
-	sql0 "github.com/g73-techchallenge-order/internal/infra/drivers/sql"
+	sql0 "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/sql"
 	gomock "go.uber.org/mock/gomock"
 )
 

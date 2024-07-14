@@ -1,4 +1,4 @@
-module github.com/g73-techchallenge-order
+module github.com/IgorRamosBR/g73-techchallenge-order
 
 go 1.20
 

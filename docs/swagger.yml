@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: API de Realização de Pedidos -  g73-techchallenge-order
+  title: API de Realização de Pedidos -  /IgorRamosBR/g73-techchallenge-order
   description: |- 
     Este é um microsserviço responsável por criar produtos e gerenciar pedidos online para uma lanchonete. Ele oferece endpoints para criar, atualizar, buscar e listar pedidos, além de interagir com produtos e processar pagamentos.
 
@@ -13,7 +13,7 @@ info:
       - **Gerar QR Code de Pagamento:** Gera um QR code para processar pagamentos dos pedidos.
     
     links úteis:
-    - [Repositório do Projeto ](https://github.com/IgorRamosBR/g73-techchallenge-order)
+    - [Repositório do Projeto ](https://github.com/IgorRamosBR/IgorRamosBR/g73-techchallenge-order)
   version: 1.0.11
 servers:
   - url: http://localhost:8080/v1/

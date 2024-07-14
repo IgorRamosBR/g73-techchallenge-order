@@ -11,7 +11,7 @@ package mock_sql
 import (
 	reflect "reflect"
 
-	sql "github.com/g73-techchallenge-order/internal/infra/drivers/sql"
+	sql "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/sql"
 	gomock "go.uber.org/mock/gomock"
 )
 

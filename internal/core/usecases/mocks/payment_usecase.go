@@ -12,7 +12,7 @@ package mock_usecases
 import (
 	reflect "reflect"
 
-	entities "github.com/g73-techchallenge-order/internal/core/entities"
+	entities "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
 	gomock "go.uber.org/mock/gomock"
 )
 

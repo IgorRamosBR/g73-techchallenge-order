@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/sql"
-	mock_sql "github.com/g73-techchallenge-order/internal/infra/drivers/sql/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/sql"
+	mock_sql "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/sql/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )

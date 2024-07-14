@@ -3,10 +3,10 @@ package gateways
 import (
 	"fmt"
 
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/sql"
-	"github.com/g73-techchallenge-order/internal/infra/gateways/sqlscripts"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/sql"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways/sqlscripts"
 )
 
 type OrderRepositoryGateway interface {

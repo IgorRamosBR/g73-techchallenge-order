@@ -11,8 +11,8 @@ package mock_usecases
 import (
 	reflect "reflect"
 
-	entities "github.com/g73-techchallenge-order/internal/core/entities"
-	dto "github.com/g73-techchallenge-order/internal/core/usecases/dto"
+	entities "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	dto "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
 	gomock "go.uber.org/mock/gomock"
 )
 

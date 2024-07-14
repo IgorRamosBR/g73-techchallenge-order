@@ -4,11 +4,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	mock_usecases "github.com/g73-techchallenge-order/internal/core/usecases/mocks"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/authorizer"
-	mock_gateways "github.com/g73-techchallenge-order/internal/infra/gateways/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	mock_usecases "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/authorizer"
+	mock_gateways "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )

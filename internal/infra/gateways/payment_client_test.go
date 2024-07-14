@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	mock_http "github.com/g73-techchallenge-order/internal/infra/drivers/http/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	mock_http "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/http/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )

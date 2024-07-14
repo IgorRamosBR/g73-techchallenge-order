@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/g73-techchallenge-order/internal/controllers"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/controllers"
 )
 
 type ApiParams struct {

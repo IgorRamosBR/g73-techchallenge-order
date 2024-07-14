@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/pkg/drivers/broker"
-	"github.com/g73-techchallenge-order/pkg/events"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/drivers/broker"
+	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events"
 )
 
 type OrderConsumerUseCase interface {

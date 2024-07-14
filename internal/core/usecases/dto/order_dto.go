@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
 	"github.com/asaskevich/govalidator"
-	"github.com/g73-techchallenge-order/internal/core/entities"
 )
 
 type OrderStatus string
