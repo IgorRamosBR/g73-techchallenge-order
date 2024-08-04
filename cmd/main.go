@@ -47,7 +47,7 @@ func main() {
 	publisher := broker.NewRabbitMQPublisher(brokerChannel, appConfig.OrderEventsTopic)
 	defer publisher.Close()
 
-	orderNotify := gateways.NewOrderNotify(publisher, appConfig.OrderEventsReadyQueue)
+	orderNotify := gateways.NewOrderNotify(publisher, appConfig.OrderEventsInProgressDestination)
 
 	authorizer := authorizer.NewAuthorizer(httpClient, appConfig.AuthorizerURL)
 

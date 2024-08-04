@@ -49,7 +49,7 @@ func (u *orderUseCase) GetAllOrders(pageParams dto.PageParams) (dto.Page[entitie
 		return dto.Page[entities.Order]{}, err
 	}
 
-	page := dto.BuildPage[entities.Order](orders, pageParams)
+	page := dto.BuildPage(orders, pageParams)
 	return page, nil
 }
 
@@ -64,11 +64,11 @@ func (u *orderUseCase) GetOrder(orderId int) (entities.Order, error) {
 
 func (u *orderUseCase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
 	// Authorize user
-	_, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
-	if err != nil {
-		log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
-		return dto.OrderCreationResponse{}, err
-	}
+	// _, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
+	// if err != nil {
+	// 	log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
+	// 	return dto.OrderCreationResponse{}, err
+	// }
 
 	// Criar um pedido a partir do DTO
 	order := orderDTO.ToOrder()
@@ -190,7 +190,7 @@ func (u *orderUseCase) saveOrder(order entities.Order) (int, error) {
 func ToProductionOrderDTO(order entities.Order) events.OrderProductionDTO {
 	productionOrder := events.OrderProductionDTO{
 		ID:     order.ID,
-		Status: order.Status,
+		Status: string(dto.OrderStatusInProgress),
 		Items:  toProductionOrderItemDTO(order.Items),
 	}
 

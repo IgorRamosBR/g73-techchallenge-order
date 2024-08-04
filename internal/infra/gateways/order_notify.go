@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/drivers/broker"
 	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events"
+	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events/broker"
 )
 
 type OrderNotify interface {

@@ -18,10 +18,11 @@ type AppConfig struct {
 	AuthorizerURL string
 	PaymentURL    string
 
-	OrderEventsBrokerUrl  string
-	OrderEventsTopic      string
-	OrderEventsPaidQueue  string
-	OrderEventsReadyQueue string
+	OrderEventsBrokerUrl             string
+	OrderEventsTopic                 string
+	OrderEventsPaidQueue             string
+	OrderEventsReadyQueue            string
+	OrderEventsInProgressDestination string
 
 	DefaultTimeout time.Duration
 }
@@ -46,6 +47,7 @@ func GetAppConfig() AppConfig {
 	appConfig.OrderEventsTopic = os.Getenv("ORDER_EVENTS_TOPIC")
 	appConfig.OrderEventsPaidQueue = os.Getenv("ORDER_EVENTS_PAID_QUEUE")
 	appConfig.OrderEventsReadyQueue = os.Getenv("ORDER_EVENTS_READY_QUEUE")
+	appConfig.OrderEventsInProgressDestination = os.Getenv("ORDER_EVENTS_IN_PROGRESS_DESTINATION")
 
 	defaultTimeout := os.Getenv("DEFAULT_TIMEOUT")
 	defaultTimeoutDuration, err := time.ParseDuration(defaultTimeout)

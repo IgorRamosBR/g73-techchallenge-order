@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/drivers/broker"
 	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events"
+	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events/broker"
 )
 
 type OrderConsumerUseCase interface {
@@ -42,13 +42,13 @@ func (u *orderConsumerUseCase) StartConsumers() {
 }
 
 func (u *orderConsumerUseCase) processOrderMessage(message []byte) error {
-	var orderEvent events.OrderProductionDTO
+	var orderEvent events.OrderStatusEventDTO
 	err := json.Unmarshal(message, &orderEvent)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshall message, error: %w", err)
 	}
 
-	err = u.orderUsecase.UpdateOrderStatus(orderEvent.ID, dto.OrderStatus(orderEvent.Status))
+	err = u.orderUsecase.UpdateOrderStatus(orderEvent.OrderId, dto.OrderStatus(orderEvent.Status))
 	if err != nil {
 		return fmt.Errorf("failed to update order status, error: %w", err)
 	}
