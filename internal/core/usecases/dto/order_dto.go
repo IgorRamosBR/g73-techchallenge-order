@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
 	"github.com/asaskevich/govalidator"
-	"github.com/g73-techchallenge-order/internal/core/entities"
 )
 
 type OrderStatus string
@@ -16,6 +16,7 @@ const (
 	OrderStatusPaid       OrderStatus = "PAID"
 	OrderStatusReceived   OrderStatus = "RECEIVED"
 	OrderStatusInProgress OrderStatus = "IN_PROGRESS"
+	OrderStatusExpired    OrderStatus = "EXPIRED"
 	OrderStatusReady      OrderStatus = "READY"
 	OrderStatusDone       OrderStatus = "DONE"
 )

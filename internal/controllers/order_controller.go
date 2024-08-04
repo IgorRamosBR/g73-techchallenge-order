@@ -6,17 +6,17 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/authorizer"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/authorizer"
 	"github.com/gin-gonic/gin"
 )
 
 type OrderController struct {
-	orderUsecase usecases.OrderUsecase
+	orderUsecase usecases.OrderUseCase
 }
 
-func NewOrderController(orderUsecase usecases.OrderUsecase) OrderController {
+func NewOrderController(orderUsecase usecases.OrderUseCase) OrderController {
 	return OrderController{
 		orderUsecase: orderUsecase,
 	}
@@ -114,7 +114,7 @@ func (c OrderController) UpdateOrderStatus(ctx *gin.Context) {
 		return
 	}
 
-	err = c.orderUsecase.UpdateOrderStatus(orderId, string(orderStatus.Status))
+	err = c.orderUsecase.UpdateOrderStatus(orderId, orderStatus.Status)
 	if err != nil {
 		handleInternalServerResponse(ctx, "failed to update order status", err)
 		return

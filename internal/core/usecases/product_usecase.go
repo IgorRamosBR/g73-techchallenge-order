@@ -4,10 +4,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/infra/gateways"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
 	log "github.com/sirupsen/logrus"
 )
 

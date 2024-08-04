@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	mock_authorizer "github.com/g73-techchallenge-order/internal/infra/drivers/authorizer/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	mock_authorizer "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/authorizer/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )

@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	mock_gateways "github.com/g73-techchallenge-order/internal/infra/gateways/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	mock_gateways "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )

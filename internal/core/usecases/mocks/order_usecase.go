@@ -5,43 +5,42 @@
 //
 //	mockgen -source=order_usecase.go -destination=mocks/order_usecase.go
 //
-
 // Package mock_usecases is a generated GoMock package.
 package mock_usecases
 
 import (
 	reflect "reflect"
 
-	entities "github.com/g73-techchallenge-order/internal/core/entities"
-	dto "github.com/g73-techchallenge-order/internal/core/usecases/dto"
+	entities "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	dto "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockOrderUsecase is a mock of OrderUsecase interface.
-type MockOrderUsecase struct {
+// MockOrderUseCase is a mock of OrderUseCase interface.
+type MockOrderUseCase struct {
 	ctrl     *gomock.Controller
-	recorder *MockOrderUsecaseMockRecorder
+	recorder *MockOrderUseCaseMockRecorder
 }
 
-// MockOrderUsecaseMockRecorder is the mock recorder for MockOrderUsecase.
-type MockOrderUsecaseMockRecorder struct {
-	mock *MockOrderUsecase
+// MockOrderUseCaseMockRecorder is the mock recorder for MockOrderUseCase.
+type MockOrderUseCaseMockRecorder struct {
+	mock *MockOrderUseCase
 }
 
-// NewMockOrderUsecase creates a new mock instance.
-func NewMockOrderUsecase(ctrl *gomock.Controller) *MockOrderUsecase {
-	mock := &MockOrderUsecase{ctrl: ctrl}
-	mock.recorder = &MockOrderUsecaseMockRecorder{mock}
+// NewMockOrderUseCase creates a new mock instance.
+func NewMockOrderUseCase(ctrl *gomock.Controller) *MockOrderUseCase {
+	mock := &MockOrderUseCase{ctrl: ctrl}
+	mock.recorder = &MockOrderUseCaseMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockOrderUsecase) EXPECT() *MockOrderUsecaseMockRecorder {
+func (m *MockOrderUseCase) EXPECT() *MockOrderUseCaseMockRecorder {
 	return m.recorder
 }
 
 // CreateOrder mocks base method.
-func (m *MockOrderUsecase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
+func (m *MockOrderUseCase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOrder", orderDTO)
 	ret0, _ := ret[0].(dto.OrderCreationResponse)
@@ -50,13 +49,13 @@ func (m *MockOrderUsecase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreation
 }
 
 // CreateOrder indicates an expected call of CreateOrder.
-func (mr *MockOrderUsecaseMockRecorder) CreateOrder(orderDTO any) *gomock.Call {
+func (mr *MockOrderUseCaseMockRecorder) CreateOrder(orderDTO any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrderUsecase)(nil).CreateOrder), orderDTO)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrderUseCase)(nil).CreateOrder), orderDTO)
 }
 
 // GetAllOrders mocks base method.
-func (m *MockOrderUsecase) GetAllOrders(pageParameters dto.PageParams) (dto.Page[entities.Order], error) {
+func (m *MockOrderUseCase) GetAllOrders(pageParameters dto.PageParams) (dto.Page[entities.Order], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllOrders", pageParameters)
 	ret0, _ := ret[0].(dto.Page[entities.Order])
@@ -65,13 +64,13 @@ func (m *MockOrderUsecase) GetAllOrders(pageParameters dto.PageParams) (dto.Page
 }
 
 // GetAllOrders indicates an expected call of GetAllOrders.
-func (mr *MockOrderUsecaseMockRecorder) GetAllOrders(pageParameters any) *gomock.Call {
+func (mr *MockOrderUseCaseMockRecorder) GetAllOrders(pageParameters any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllOrders", reflect.TypeOf((*MockOrderUsecase)(nil).GetAllOrders), pageParameters)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllOrders", reflect.TypeOf((*MockOrderUseCase)(nil).GetAllOrders), pageParameters)
 }
 
 // GetOrderStatus mocks base method.
-func (m *MockOrderUsecase) GetOrderStatus(orderId int) (dto.OrderStatusDTO, error) {
+func (m *MockOrderUseCase) GetOrderStatus(orderId int) (dto.OrderStatusDTO, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOrderStatus", orderId)
 	ret0, _ := ret[0].(dto.OrderStatusDTO)
@@ -80,13 +79,13 @@ func (m *MockOrderUsecase) GetOrderStatus(orderId int) (dto.OrderStatusDTO, erro
 }
 
 // GetOrderStatus indicates an expected call of GetOrderStatus.
-func (mr *MockOrderUsecaseMockRecorder) GetOrderStatus(orderId any) *gomock.Call {
+func (mr *MockOrderUseCaseMockRecorder) GetOrderStatus(orderId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrderStatus", reflect.TypeOf((*MockOrderUsecase)(nil).GetOrderStatus), orderId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrderStatus", reflect.TypeOf((*MockOrderUseCase)(nil).GetOrderStatus), orderId)
 }
 
 // UpdateOrderStatus mocks base method.
-func (m *MockOrderUsecase) UpdateOrderStatus(orderId int, orderStatus string) error {
+func (m *MockOrderUseCase) UpdateOrderStatus(orderId int, orderStatus dto.OrderStatus) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateOrderStatus", orderId, orderStatus)
 	ret0, _ := ret[0].(error)
@@ -94,7 +93,7 @@ func (m *MockOrderUsecase) UpdateOrderStatus(orderId int, orderStatus string) er
 }
 
 // UpdateOrderStatus indicates an expected call of UpdateOrderStatus.
-func (mr *MockOrderUsecaseMockRecorder) UpdateOrderStatus(orderId, orderStatus any) *gomock.Call {
+func (mr *MockOrderUseCaseMockRecorder) UpdateOrderStatus(orderId, orderStatus any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOrderStatus", reflect.TypeOf((*MockOrderUsecase)(nil).UpdateOrderStatus), orderId, orderStatus)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOrderStatus", reflect.TypeOf((*MockOrderUseCase)(nil).UpdateOrderStatus), orderId, orderStatus)
 }

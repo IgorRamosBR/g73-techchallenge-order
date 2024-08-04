@@ -12,7 +12,7 @@ package mock_gateways
 import (
 	reflect "reflect"
 
-	dto "github.com/g73-techchallenge-order/internal/core/usecases/dto"
+	dto "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
 	gomock "go.uber.org/mock/gomock"
 )
 

@@ -4,11 +4,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	mock_usecases "github.com/g73-techchallenge-order/internal/core/usecases/mocks"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/authorizer"
-	mock_gateways "github.com/g73-techchallenge-order/internal/infra/gateways/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	mock_usecases "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/authorizer"
+	mock_gateways "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -17,7 +17,7 @@ func TestOrderUsecase_GetAllOrders(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	orderRepository := mock_gateways.NewMockOrderRepositoryGateway(ctrl)
 
-	orderUsecase := NewOrderUsecase(nil, nil, nil, orderRepository)
+	orderUsecase := NewOrderUsecase(nil, nil, nil, nil, orderRepository)
 
 	pageParams := dto.NewPageParams(20, 10)
 
@@ -51,7 +51,7 @@ func TestOrderUsecase_GetOrderStatus(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	orderRepository := mock_gateways.NewMockOrderRepositoryGateway(ctrl)
 
-	orderUsecase := NewOrderUsecase(nil, nil, nil, orderRepository)
+	orderUsecase := NewOrderUsecase(nil, nil, nil, nil, orderRepository)
 
 	orderId := 123
 
@@ -84,11 +84,11 @@ func TestOrderUsecase_UpdateOrderStatus(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	orderRepository := mock_gateways.NewMockOrderRepositoryGateway(ctrl)
 
-	orderUsecase := NewOrderUsecase(nil, nil, nil, orderRepository)
+	orderUsecase := NewOrderUsecase(nil, nil, nil, nil, orderRepository)
 
 	type args struct {
 		id          int
-		orderStatus string
+		orderStatus dto.OrderStatus
 	}
 	type want struct {
 		err error
@@ -162,7 +162,7 @@ func TestOrderUsecase_CreateOrder(t *testing.T) {
 	productUsecase := mock_usecases.NewMockProductUsecase(ctrl)
 	orderRepository := mock_gateways.NewMockOrderRepositoryGateway(ctrl)
 
-	orderUsecase := NewOrderUsecase(authorizerUsecase, paymentUsecase, productUsecase, orderRepository)
+	orderUsecase := NewOrderUsecase(authorizerUsecase, paymentUsecase, productUsecase, nil, orderRepository)
 
 	type args struct {
 		orderDTO dto.OrderDTO

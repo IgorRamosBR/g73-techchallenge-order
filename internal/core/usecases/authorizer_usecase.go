@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/authorizer"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/authorizer"
 	log "github.com/sirupsen/logrus"
 )
 

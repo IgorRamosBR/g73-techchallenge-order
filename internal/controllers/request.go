@@ -3,7 +3,7 @@ package controllers
 import (
 	"strconv"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
 	"github.com/gin-gonic/gin"
 )
 

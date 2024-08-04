@@ -3,14 +3,15 @@ package gateways
 import (
 	"fmt"
 
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/sql"
-	"github.com/g73-techchallenge-order/internal/infra/gateways/sqlscripts"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/sql"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways/sqlscripts"
 )
 
 type OrderRepositoryGateway interface {
 	FindAllOrders(pageParams dto.PageParams) ([]entities.Order, error)
+	FindOrderById(orderId int) (entities.Order, error)
 	GetOrderStatus(orderId int) (string, error)
 	SaveOrder(order entities.Order) (int, error)
 	UpdateOrderStatus(orderId int, orderStatus string) error
@@ -43,6 +44,22 @@ func (r orderRepositoryGateway) FindAllOrders(pageParams dto.PageParams) ([]enti
 	}
 
 	return orders, nil
+}
+
+func (r orderRepositoryGateway) FindOrderById(orderId int) (entities.Order, error) {
+	var order entities.Order
+	err := r.sqlClient.FindOne(&order, sqlscripts.FindOrderByIdQuery, orderId)
+	if err != nil {
+		return entities.Order{}, fmt.Errorf("failed to find order, error %w", err)
+	}
+
+	orderItems, err := r.getOrderItems(orderId)
+	if err != nil {
+		return entities.Order{}, fmt.Errorf("failed to get order items, error %w", err)
+	}
+
+	order.Items = orderItems
+	return order, nil
 }
 
 func (r orderRepositoryGateway) GetOrderStatus(orderId int) (string, error) {

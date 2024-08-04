@@ -7,17 +7,23 @@ const FindAllOrdersQuery = `
 		o.total_amount,
 		o.status,
 		o.created_at,
-		c.id as "customer.id",
-		c.name as "customer.name", 
-		c.cpf as "customer.cpf", 
-		c.email as "customer.email",
-		c.created_at as "customer.created_at",
-		c.updated_at as "customer.updated_at"
+		o.customer_cpf
 	FROM public.orders o
-	LEFT JOIN public.customers c ON o.customer_id = c.id
 	WHERE o.status <> 'DONE'
 	ORDER BY array_position(array['READY','IN_PROGRESS','RECEIVED'], o.status), o.created_at ASC
 	LIMIT $1 OFFSET $2
+`
+
+const FindOrderByIdQuery = `
+	SELECT 
+		o.id,
+		o.coupon,
+		o.total_amount,
+		o.status,
+		o.created_at,
+		o.customer_cpf
+	FROM public.orders o
+	WHERE o.id = $1
 `
 
 const FindOrderItems = `

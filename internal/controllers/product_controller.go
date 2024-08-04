@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/g73-techchallenge-order/internal/core/usecases"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/drivers/sql"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/sql"
 
 	"github.com/gin-gonic/gin"
 )

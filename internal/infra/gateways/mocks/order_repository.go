@@ -5,15 +5,14 @@
 //
 //	mockgen -source=order_repository.go -destination=mocks/order_repository.go
 //
-
 // Package mock_gateways is a generated GoMock package.
 package mock_gateways
 
 import (
 	reflect "reflect"
 
-	entities "github.com/g73-techchallenge-order/internal/core/entities"
-	dto "github.com/g73-techchallenge-order/internal/core/usecases/dto"
+	entities "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	dto "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -53,6 +52,21 @@ func (m *MockOrderRepositoryGateway) FindAllOrders(pageParams dto.PageParams) ([
 func (mr *MockOrderRepositoryGatewayMockRecorder) FindAllOrders(pageParams any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllOrders", reflect.TypeOf((*MockOrderRepositoryGateway)(nil).FindAllOrders), pageParams)
+}
+
+// FindOrderById mocks base method.
+func (m *MockOrderRepositoryGateway) FindOrderById(orderId int) (entities.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOrderById", orderId)
+	ret0, _ := ret[0].(entities.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOrderById indicates an expected call of FindOrderById.
+func (mr *MockOrderRepositoryGatewayMockRecorder) FindOrderById(orderId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOrderById", reflect.TypeOf((*MockOrderRepositoryGateway)(nil).FindOrderById), orderId)
 }
 
 // GetOrderStatus mocks base method.

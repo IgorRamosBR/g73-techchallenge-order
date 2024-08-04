@@ -1,54 +1,74 @@
 package usecases
 
 import (
-	"github.com/g73-techchallenge-order/internal/core/entities"
-	"github.com/g73-techchallenge-order/internal/core/usecases/dto"
-	"github.com/g73-techchallenge-order/internal/infra/gateways"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
+	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways"
+	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events"
 
 	log "github.com/sirupsen/logrus"
 )
 
-type OrderUsecase interface {
+type OrderUseCase interface {
 	GetAllOrders(pageParameters dto.PageParams) (dto.Page[entities.Order], error)
 	GetOrderStatus(orderId int) (dto.OrderStatusDTO, error)
-	UpdateOrderStatus(orderId int, orderStatus string) error
+	UpdateOrderStatus(orderId int, orderStatus dto.OrderStatus) error
 	CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error)
 }
 
-type orderUsecase struct {
-	authorizerUsecase      AuthorizerUsecase
-	paymentUsecase         PaymentUsecase
-	productUsecase         ProductUsecase
-	orderRepositoryGateway gateways.OrderRepositoryGateway
+type orderUseCase struct {
+	authorizerUsecase AuthorizerUsecase
+	paymentUsecase    PaymentUsecase
+	productUsecase    ProductUsecase
+	orderNotify       gateways.OrderNotify
+	orderRepository   gateways.OrderRepositoryGateway
 }
 
-func NewOrderUsecase(authorizerUsecase AuthorizerUsecase, paymentUsecase PaymentUsecase, productUsecase ProductUsecase, orderRepositoryGateway gateways.OrderRepositoryGateway) OrderUsecase {
-	return orderUsecase{
-		authorizerUsecase:      authorizerUsecase,
-		paymentUsecase:         paymentUsecase,
-		productUsecase:         productUsecase,
-		orderRepositoryGateway: orderRepositoryGateway,
+type OrderUseCaseConfig struct {
+	AuthorizerUsecase      AuthorizerUsecase
+	PaymentUseCase         PaymentUsecase
+	ProductUseCase         ProductUsecase
+	OrderNotify            gateways.OrderNotify
+	OrderRepositoryGateway gateways.OrderRepositoryGateway
+}
+
+func NewOrderUsecase(authorizerUsecase AuthorizerUsecase, paymentUseCase PaymentUsecase, productUseCase ProductUsecase, orderNotify gateways.OrderNotify, orderRepositoryGateway gateways.OrderRepositoryGateway) OrderUseCase {
+	return &orderUseCase{
+		authorizerUsecase: authorizerUsecase,
+		paymentUsecase:    paymentUseCase,
+		productUsecase:    productUseCase,
+		orderNotify:       orderNotify,
+		orderRepository:   orderRepositoryGateway,
 	}
 }
 
-func (u orderUsecase) GetAllOrders(pageParams dto.PageParams) (dto.Page[entities.Order], error) {
-	orders, err := u.orderRepositoryGateway.FindAllOrders(pageParams)
+func (u *orderUseCase) GetAllOrders(pageParams dto.PageParams) (dto.Page[entities.Order], error) {
+	orders, err := u.orderRepository.FindAllOrders(pageParams)
 	if err != nil {
 		log.Errorf("failed to get all orders, error: %v", err)
 		return dto.Page[entities.Order]{}, err
 	}
 
-	page := dto.BuildPage[entities.Order](orders, pageParams)
+	page := dto.BuildPage(orders, pageParams)
 	return page, nil
 }
 
-func (u orderUsecase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
-	// Authorize user
-	_, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
+func (u *orderUseCase) GetOrder(orderId int) (entities.Order, error) {
+	order, err := u.orderRepository.FindOrderById(orderId)
 	if err != nil {
-		log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
-		return dto.OrderCreationResponse{}, err
+		log.Errorf("failed to get order, error: %v", err)
 	}
+
+	return order, nil
+}
+
+func (u *orderUseCase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
+	// Authorize user
+	// _, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
+	// if err != nil {
+	// 	log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
+	// 	return dto.OrderCreationResponse{}, err
+	// }
 
 	// Criar um pedido a partir do DTO
 	order := orderDTO.ToOrder()
@@ -86,7 +106,46 @@ func (u orderUsecase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationRespo
 	return response, nil
 }
 
-func (u orderUsecase) calculateProducts(items []entities.OrderItem) (float64, error) {
+func (u *orderUseCase) GetOrderStatus(orderId int) (dto.OrderStatusDTO, error) {
+	status, err := u.orderRepository.GetOrderStatus(orderId)
+	if err != nil {
+		return dto.OrderStatusDTO{}, err
+	}
+
+	return dto.OrderStatusDTO{
+		Status: dto.OrderStatus(status),
+	}, nil
+}
+
+func (u *orderUseCase) UpdateOrderStatus(orderId int, status dto.OrderStatus) error {
+	err := u.orderRepository.UpdateOrderStatus(orderId, string(status))
+	if err != nil {
+		return err
+	}
+
+	if status == dto.OrderStatusPaid {
+		return u.NotifyOrderPaid(orderId)
+	}
+
+	return nil
+}
+
+func (u *orderUseCase) NotifyOrderPaid(orderId int) error {
+	order, err := u.GetOrder(orderId)
+	if err != nil {
+		return err
+	}
+
+	productionOrder := ToProductionOrderDTO(order)
+	err = u.orderNotify.NotifyPaymentOrder(productionOrder)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *orderUseCase) calculateProducts(items []entities.OrderItem) (float64, error) {
 	for i, item := range items {
 		product, err := u.getProduct(item.Product.ID)
 		if err != nil {
@@ -101,7 +160,7 @@ func (u orderUsecase) calculateProducts(items []entities.OrderItem) (float64, er
 	return totalAmount, nil
 }
 
-func (u orderUsecase) getProduct(id int) (entities.Product, error) {
+func (u *orderUseCase) getProduct(id int) (entities.Product, error) {
 	product, err := u.productUsecase.GetProductById(id)
 	if err != nil {
 		log.Errorf("failed to find product [%d] to process order, error: %v", id, err)
@@ -111,7 +170,7 @@ func (u orderUsecase) getProduct(id int) (entities.Product, error) {
 	return product, nil
 }
 
-func (u orderUsecase) calculateTotal(items []entities.OrderItem) float64 {
+func (u *orderUseCase) calculateTotal(items []entities.OrderItem) float64 {
 	var total float64
 	for _, item := range items {
 		total += item.Product.Price * float64(item.Quantity)
@@ -119,8 +178,8 @@ func (u orderUsecase) calculateTotal(items []entities.OrderItem) float64 {
 	return total
 }
 
-func (u orderUsecase) saveOrder(order entities.Order) (int, error) {
-	orderId, err := u.orderRepositoryGateway.SaveOrder(order)
+func (u *orderUseCase) saveOrder(order entities.Order) (int, error) {
+	orderId, err := u.orderRepository.SaveOrder(order)
 	if err != nil {
 		return 0, err
 	}
@@ -128,22 +187,30 @@ func (u orderUsecase) saveOrder(order entities.Order) (int, error) {
 	return orderId, nil
 }
 
-func (u orderUsecase) GetOrderStatus(orderId int) (dto.OrderStatusDTO, error) {
-	status, err := u.orderRepositoryGateway.GetOrderStatus(orderId)
-	if err != nil {
-		return dto.OrderStatusDTO{}, err
+func ToProductionOrderDTO(order entities.Order) events.OrderProductionDTO {
+	productionOrder := events.OrderProductionDTO{
+		ID:     order.ID,
+		Status: string(dto.OrderStatusInProgress),
+		Items:  toProductionOrderItemDTO(order.Items),
 	}
 
-	return dto.OrderStatusDTO{
-		Status: dto.OrderStatus(status),
-	}, nil
+	return productionOrder
 }
 
-func (u orderUsecase) UpdateOrderStatus(orderId int, orderStatus string) error {
-	err := u.orderRepositoryGateway.UpdateOrderStatus(orderId, orderStatus)
-	if err != nil {
-		return err
+func toProductionOrderItemDTO(orderItems []entities.OrderItem) []events.OrderItemProductionDTO {
+	productionOrderItems := []events.OrderItemProductionDTO{}
+	for _, item := range orderItems {
+		productionOrderItem := events.OrderItemProductionDTO{
+			Quantity: item.ID,
+			Type:     item.Type,
+			Products: events.OrderProductionProductDTO{
+				Name:        item.Product.Name,
+				Description: item.Product.Description,
+				Category:    item.Product.Category,
+			},
+		}
+		productionOrderItems = append(productionOrderItems, productionOrderItem)
 	}
 
-	return nil
+	return productionOrderItems
 }
