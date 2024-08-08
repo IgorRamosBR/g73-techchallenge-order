@@ -3,12 +3,14 @@ package usecases
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/entities"
 	"github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/dto"
 	mock_usecases "github.com/IgorRamosBR/g73-techchallenge-order/internal/core/usecases/mocks"
 	"github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/drivers/authorizer"
 	mock_gateways "github.com/IgorRamosBR/g73-techchallenge-order/internal/infra/gateways/mocks"
+	"github.com/IgorRamosBR/g73-techchallenge-order/pkg/events"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -83,8 +85,8 @@ func TestOrderUsecase_GetOrderStatus(t *testing.T) {
 func TestOrderUsecase_UpdateOrderStatus(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	orderRepository := mock_gateways.NewMockOrderRepositoryGateway(ctrl)
-
-	orderUsecase := NewOrderUsecase(nil, nil, nil, nil, orderRepository)
+	orderNotify := mock_gateways.NewMockOrderNotify(ctrl)
+	orderUsecase := NewOrderUsecase(nil, nil, nil, orderNotify, orderRepository)
 
 	type args struct {
 		id          int
@@ -93,17 +95,30 @@ func TestOrderUsecase_UpdateOrderStatus(t *testing.T) {
 	type want struct {
 		err error
 	}
-	type repositoryCall struct {
+	type updateOrderStatusCall struct {
 		id          int
 		orderStatus string
 		times       int
 		err         error
 	}
+	type getOrderCall struct {
+		id    int
+		order entities.Order
+		times int
+		err   error
+	}
+	type orderNotifyCall struct {
+		productionOrder events.OrderProductionDTO
+		times           int
+		err             error
+	}
 	tests := []struct {
 		name string
 		args
 		want
-		repositoryCall
+		updateOrderStatusCall
+		getOrderCall
+		orderNotifyCall
 	}{
 		{
 			name: "should fail to update order status when repository returns error",
@@ -114,7 +129,7 @@ func TestOrderUsecase_UpdateOrderStatus(t *testing.T) {
 			want: want{
 				err: errors.New("internal server error"),
 			},
-			repositoryCall: repositoryCall{
+			updateOrderStatusCall: updateOrderStatusCall{
 				id:          123,
 				orderStatus: "CREATED",
 				times:       1,
@@ -122,28 +137,145 @@ func TestOrderUsecase_UpdateOrderStatus(t *testing.T) {
 			},
 		},
 		{
-			name: "should update order status succesfully",
+			name: "should update order status and notify order succesfully",
 			args: args{
 				id:          123,
-				orderStatus: "CREATED",
+				orderStatus: "PAID",
 			},
 			want: want{
 				err: nil,
 			},
-			repositoryCall: repositoryCall{
+			updateOrderStatusCall: updateOrderStatusCall{
 				id:          123,
-				orderStatus: "CREATED",
+				orderStatus: "PAID",
 				times:       1,
 				err:         nil,
+			},
+			getOrderCall: getOrderCall{
+				id: 123,
+				order: entities.Order{
+					ID: 123,
+					Items: []entities.OrderItem{
+						{
+							ID:       222,
+							Quantity: 1,
+							Type:     "UNIT",
+							Product: entities.Product{
+								ID:          11,
+								Name:        "Batata",
+								SkuId:       "",
+								Description: "Frita",
+								Category:    "Acompanhamento",
+								Price:       99.99,
+								CreatedAt:   time.Time{},
+								UpdatedAt:   time.Time{},
+							},
+						},
+					},
+					TotalAmount: 99.99,
+					CustomerCPF: "123456789",
+				},
+				times: 1,
+				err:   nil,
+			},
+			orderNotifyCall: orderNotifyCall{
+				productionOrder: events.OrderProductionDTO{
+					ID:     123,
+					Status: "IN_PROGRESS",
+					Items: []events.OrderItemProductionDTO{
+						{
+							Quantity: 1,
+							Products: events.OrderProductionProductDTO{
+								Name:        "Batata",
+								Description: "Frita",
+								Category:    "Acompanhamento",
+							},
+							Type: "UNIT",
+						},
+					},
+				},
+				times: 1,
+				err:   nil,
+			},
+		},
+		{
+			name: "should update order status and failed get order to notify",
+			args: args{
+				id:          123,
+				orderStatus: "PAID",
+			},
+			want: want{
+				err: errors.New("internal server error"),
+			},
+			updateOrderStatusCall: updateOrderStatusCall{
+				id:          123,
+				orderStatus: "PAID",
+				times:       1,
+				err:         nil,
+			},
+			getOrderCall: getOrderCall{
+				id:    123,
+				order: entities.Order{},
+				times: 1,
+				err:   errors.New("internal server error"),
+			},
+			orderNotifyCall: orderNotifyCall{
+				productionOrder: events.OrderProductionDTO{},
+				times:           0,
+				err:             nil,
+			},
+		},
+		{
+			name: "should update order status and failed to notify",
+			args: args{
+				id:          123,
+				orderStatus: "PAID",
+			},
+			want: want{
+				err: errors.New("internal server error"),
+			},
+			updateOrderStatusCall: updateOrderStatusCall{
+				id:          123,
+				orderStatus: "PAID",
+				times:       1,
+				err:         nil,
+			},
+			getOrderCall: getOrderCall{
+				id: 123,
+				order: entities.Order{
+					ID:     123,
+					Status: "PAID",
+				},
+				times: 1,
+				err:   nil,
+			},
+			orderNotifyCall: orderNotifyCall{
+				productionOrder: events.OrderProductionDTO{
+					ID:     123,
+					Status: "IN_PROGRESS",
+					Items:  []events.OrderItemProductionDTO{},
+				},
+				times: 1,
+				err:   errors.New("internal server error"),
 			},
 		},
 	}
 
 	for _, tt := range tests {
 		orderRepository.EXPECT().
-			UpdateOrderStatus(gomock.Eq(tt.repositoryCall.id), gomock.Eq(tt.repositoryCall.orderStatus)).
-			Times(tt.repositoryCall.times).
-			Return(tt.repositoryCall.err)
+			UpdateOrderStatus(gomock.Eq(tt.updateOrderStatusCall.id), gomock.Eq(tt.updateOrderStatusCall.orderStatus)).
+			Times(tt.updateOrderStatusCall.times).
+			Return(tt.updateOrderStatusCall.err)
+
+		orderRepository.EXPECT().
+			FindOrderById(gomock.Eq(tt.getOrderCall.id)).
+			Times(tt.getOrderCall.times).
+			Return(tt.getOrderCall.order, tt.getOrderCall.err)
+
+		orderNotify.EXPECT().
+			NotifyPaymentOrder(tt.orderNotifyCall.productionOrder).
+			Times(tt.orderNotifyCall.times).
+			Return(tt.orderNotifyCall.err)
 
 		err := orderUsecase.UpdateOrderStatus(tt.args.id, tt.args.orderStatus)
 

@@ -57,6 +57,7 @@ func (u *orderUseCase) GetOrder(orderId int) (entities.Order, error) {
 	order, err := u.orderRepository.FindOrderById(orderId)
 	if err != nil {
 		log.Errorf("failed to get order, error: %v", err)
+		return entities.Order{}, err
 	}
 
 	return order, nil
@@ -64,11 +65,11 @@ func (u *orderUseCase) GetOrder(orderId int) (entities.Order, error) {
 
 func (u *orderUseCase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
 	// Authorize user
-	// _, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
-	// if err != nil {
-	// 	log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
-	// 	return dto.OrderCreationResponse{}, err
-	// }
+	_, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
+	if err != nil {
+		log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
+		return dto.OrderCreationResponse{}, err
+	}
 
 	// Criar um pedido a partir do DTO
 	order := orderDTO.ToOrder()
@@ -201,7 +202,7 @@ func toProductionOrderItemDTO(orderItems []entities.OrderItem) []events.OrderIte
 	productionOrderItems := []events.OrderItemProductionDTO{}
 	for _, item := range orderItems {
 		productionOrderItem := events.OrderItemProductionDTO{
-			Quantity: item.ID,
+			Quantity: item.Quantity,
 			Type:     item.Type,
 			Products: events.OrderProductionProductDTO{
 				Name:        item.Product.Name,
