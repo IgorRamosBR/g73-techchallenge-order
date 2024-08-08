@@ -37,11 +37,11 @@ func NewOrderConsumerUseCase(orderPaidConsumer, orderReadyConsumer broker.Consum
 }
 
 func (u *orderConsumerUseCase) StartConsumers() {
-	go u.orderPaidConsumer.StartConsumer(u.processOrderMessage)
-	go u.orderReadyConsumer.StartConsumer(u.processOrderMessage)
+	go u.orderPaidConsumer.StartConsumer(u.ProcessOrderMessage)
+	go u.orderReadyConsumer.StartConsumer(u.ProcessOrderMessage)
 }
 
-func (u *orderConsumerUseCase) processOrderMessage(message []byte) error {
+func (u *orderConsumerUseCase) ProcessOrderMessage(message []byte) error {
 	var orderEvent events.OrderStatusEventDTO
 	err := json.Unmarshal(message, &orderEvent)
 	if err != nil {

@@ -370,7 +370,7 @@ func TestOrderController_UpdateOrderStatus(t *testing.T) {
 	}
 	type orderUseCaseCall struct {
 		orderId     int
-		orderStatus string
+		orderStatus dto.OrderStatus
 		times       int
 		err         error
 	}
@@ -412,7 +412,6 @@ func TestOrderController_UpdateOrderStatus(t *testing.T) {
 				respBody:   `{"message":"failed to bind order status payload","error":"invalid character '\u003c' looking for beginning of value"}`,
 			},
 		},
-
 		{
 			name: "should return bad request when state is wrong in the request",
 			args: args{
@@ -436,7 +435,7 @@ func TestOrderController_UpdateOrderStatus(t *testing.T) {
 			},
 			orderUseCaseCall: orderUseCaseCall{
 				orderId:     123,
-				orderStatus: "CREATED",
+				orderStatus: dto.OrderStatusCreated,
 				times:       1,
 				err:         errors.New("internal server error"),
 			},
@@ -453,7 +452,7 @@ func TestOrderController_UpdateOrderStatus(t *testing.T) {
 			},
 			orderUseCaseCall: orderUseCaseCall{
 				orderId:     123,
-				orderStatus: "CREATED",
+				orderStatus: dto.OrderStatusCreated,
 				times:       1,
 				err:         nil,
 			},
