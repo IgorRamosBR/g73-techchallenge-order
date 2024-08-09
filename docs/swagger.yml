@@ -10,7 +10,6 @@ info:
       - **Atualizar Pedido:** Permite atualizar o status dos pedidos.
       - **Listar Pedidos:** Fornece uma lista de todos os pedidos, filtrada por diferentes critérios.
       - **Buscar Pedido por ID:** Permite buscar um pedido específico pelo seu ID.
-      - **Gerar QR Code de Pagamento:** Gera um QR code para processar pagamentos dos pedidos.
     
     links úteis:
     - [Repositório do Projeto ](https://github.com/IgorRamosBR/IgorRamosBR/g73-techchallenge-order)

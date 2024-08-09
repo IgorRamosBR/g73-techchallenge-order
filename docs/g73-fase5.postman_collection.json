@@ -1,9 +1,8 @@
 {
 	"info": {
 		"_postman_id": "b60f711b-4d2c-4995-93c8-13f4e8d4df62",
-		"name": "g73-techchallenge-fase-4",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17297669"
+		"name": "g73-techchallenge-fase-5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -80,12 +79,15 @@
 			"item": [
 				{
 					"name": "Create product",
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": true
+					},
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Combo 1\",\n    \"skuId\": \"000005\",\n    \"description\": \"Lanche, acompanhament e bebida sortida\",\n    \"category\": \"Acompanhamento\",\n    \"price\": 40.00\n}",
+							"raw": "{\n    \"name\": \"Combo 10\",\n    \"skuId\": \"000005\",\n    \"description\": \"Lanche, acompanhament e bebida sortida\",\n    \"category\": \"Acompanhamento\",\n    \"price\": 40.00\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -93,14 +95,15 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/products",
+							"raw": "localhost:8080/v1/products/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"v1",
-								"products"
+								"products",
+								""
 							]
 						}
 					},
@@ -109,7 +112,9 @@
 				{
 					"name": "Get All Products",
 					"protocolProfileBehavior": {
-						"disableBodyPruning": true
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false,
+						"strictSSL": false
 					},
 					"request": {
 						"method": "GET",
@@ -124,7 +129,8 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/products",
+							"raw": "http://localhost:8080/v1/products",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
@@ -142,6 +148,11 @@
 								{
 									"key": "offset",
 									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
 									"disabled": true
 								}
 							]
@@ -199,7 +210,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/products/:id",
+							"raw": "localhost:8080/v1/products/1777",
 							"host": [
 								"localhost"
 							],
@@ -207,13 +218,7 @@
 							"path": [
 								"v1",
 								"products",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"1777"
 							]
 						}
 					},
@@ -225,7 +230,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/products/:id",
+							"raw": "localhost:8080/v1/products/851",
 							"host": [
 								"localhost"
 							],
@@ -233,13 +238,7 @@
 							"path": [
 								"v1",
 								"products",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"851"
 							]
 						}
 					},
@@ -268,6 +267,18 @@
 							"path": [
 								"v1",
 								"orders"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "(CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE)",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "(UNIT|COMBO|CUSTOM_COMBO)",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -345,7 +356,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/orders/:id/status",
+							"raw": "localhost:8080/v1/orders/11/status",
 							"host": [
 								"localhost"
 							],
@@ -353,7 +364,7 @@
 							"path": [
 								"v1",
 								"orders",
-								":id",
+								"11",
 								"status"
 							],
 							"query": [
@@ -367,12 +378,6 @@
 									"value": "1",
 									"disabled": true
 								}
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
 							]
 						}
 					},
@@ -385,7 +390,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"CREATED\"\r\n}",
+							"raw": "{\r\n    \"status\": \"RECEIVED\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -393,7 +398,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/orders/:id/status",
+							"raw": "localhost:8080/v1/orders/11/status",
 							"host": [
 								"localhost"
 							],
@@ -401,7 +406,7 @@
 							"path": [
 								"v1",
 								"orders",
-								":id",
+								"11",
 								"status"
 							],
 							"query": [
@@ -417,14 +422,8 @@
 								},
 								{
 									"key": "status",
-									"value": "\"CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE\"",
+									"value": "(CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE)",
 									"disabled": true
-								}
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
 								}
 							]
 						}
@@ -451,7 +450,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8081/v1/payment/:id/notify",
+							"raw": "localhost:8081/v1/payment/11/notify",
 							"host": [
 								"localhost"
 							],
@@ -459,14 +458,8 @@
 							"path": [
 								"v1",
 								"payment",
-								":id",
+								"11",
 								"notify"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
 							]
 						}
 					},
@@ -479,7 +472,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"orderId\": 7,\n    \"customerCPF\": \"12345678900\",\n    \"Items\": [\n        {\n            \"quantity\": 1,\n            \"product\": {\n                \"name\": \"Combo 1\",\n                \"skuId\": \"000005\",\n                \"description\": \"Lanche, acompanhament e bebida sortida\",\n                \"category\": \"Acompanhamento\",\n                \"type\": \"COMBO\",\n                \"price\": 40.00\n            }\n        }\n    ],\n    \"TotalAmount\": 40.00,\n    \"QRCode\": \"00020101021243650016COM.MERCADOLIBRE02013063638f1192a-5fd1-4180-a180-8bcae3556bc35204000053039865802BR5925IZABELAAAADEMELO6007BARUERI62070503***63040B6D\"\n}",
+							"raw": "{\n    \"orderId\": 11,\n    \"customerCPF\": \"12345678900\",\n    \"Items\": [\n        {\n            \"quantity\": 1,\n            \"product\": {\n                \"name\": \"Combo 1\",\n                \"skuId\": \"000005\",\n                \"description\": \"Lanche, acompanhament e bebida sortida\",\n                \"category\": \"Acompanhamento\",\n                \"type\": \"COMBO\",\n                \"price\": 40.00\n            }\n        }\n    ],\n    \"TotalAmount\": 40.00,\n    \"QRCode\": \"00020101021243650016COM.MERCADOLIBRE02013063638f1192a-5fd1-4180-a180-8bcae3556bc35204000053039865802BR5925IZABELAAAADEMELO6007BARUERI62070503***63040B6D\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -495,6 +488,36 @@
 							"path": [
 								"v1",
 								"paymentOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "payment Expire",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/v1/payment/11/expire",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"payment",
+								"11",
+								"expire"
 							]
 						}
 					},
@@ -551,7 +574,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8082/v1/orders/:id/status",
+							"raw": "localhost:8082/v1/orders/:id/status?status=(CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE)",
 							"host": [
 								"localhost"
 							],
@@ -561,6 +584,12 @@
 								"orders",
 								":id",
 								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "(CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE)"
+								}
 							],
 							"variable": [
 								{
